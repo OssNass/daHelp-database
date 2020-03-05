@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="Alhelal" id="Project_3b6d897" template="Default" database="MariaDb" >
+	<schema name="administration" schemaname="administration" options="" >
+		<table name="internationorganization" >
+			<comment><![CDATA[معلومات عن المنظمات الدولية الداعمة
+ICRC,DRC,UNHCR,...etc]]></comment>
+			<column name="id" type="int" jt="4" mandatory="y" autoincrement="y" />
+			<column name="name" type="varchar" length="100" jt="12" mandatory="y" />
+			<index name="pk_internationorganization_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="organizaiton" >
+			<comment><![CDATA[توفير معلومات عن المنظمة التي تدير العمليات الإغاثية]]></comment>
+			<column name="id" type="int" jt="4" mandatory="y" autoincrement="y" />
+			<column name="name" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="telephone" type="varchar" length="10" jt="12" />
+			<column name="address" type="varchar" length="100" jt="12" />
+			<column name="hq_city" type="varchar" length="100" jt="12" >
+				<comment><![CDATA[The location of the headquarters of the organization]]></comment>
+			</column>
+			<index name="pk_organizaiton_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="region" >
+			<comment><![CDATA[معلومات عن التقسيمات الإدارية السورية]]></comment>
+			<column name="id" type="int" jt="4" mandatory="y" autoincrement="y" />
+			<column name="name" type="varchar" length="20" jt="12" />
+			<column name="parent_id" type="int" jt="4" />
+			<column name="level" type="enum" jt="12" />
+			<index name="pk_region_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_region_region" to_schema="administration" to_table="region" >
+				<fk_column name="parent_id" pk="id" />
+			</fk>
+		</table>
+		<table name="subbranch" >
+			<comment><![CDATA[توفير معلومات عن الأفرع التابعة لهذه المنظمة،
+في حال كانت المنظمة لا تمتلك أفرع،
+ يتم إدراج فرع واحد فقط تتطابق معلوماته معلومات المنظمة]]></comment>
+			<column name="name" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="id" type="int" jt="4" mandatory="y" autoincrement="y" />
+			<column name="organization_id" type="int" jt="4" mandatory="y" />
+			<column name="parent_id" type="int" jt="4" />
+			<column name="telephone" type="varchar" length="10" jt="12" />
+			<column name="subbranch_city" type="varchar" length="20" jt="12" />
+			<column name="address" type="varchar" length="100" jt="12" />
+			<index name="pk_subbranch_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+				<column name="organization_id" />
+			</index>
+			<fk name="fk_subbranch_organizaiton" to_schema="administration" to_table="organizaiton" delete_action="restrict" update_action="cascade" >
+				<fk_column name="organization_id" pk="id" />
+			</fk>
+			<fk name="fk_subbranch_subbranch" to_schema="administration" to_table="subbranch" delete_action="setNull" update_action="cascade" >
+				<fk_column name="parent_id" pk="id" />
+			</fk>
+		</table>
+	</schema>
+	<schema name="basic" schemaname="basic" >
+		<table name="chronic_desciption" >
+			<comment><![CDATA[توصيف الأمراض المزمنة]]></comment>
+			<column name="status_id" type="int" length="1" jt="4" mandatory="y" />
+			<column name="status_name" type="varchar" length="50" jt="12" mandatory="y" />
+			<column name="code" type="varchar" length="5" jt="12" mandatory="y" />
+			<index name="pk_chronic_desciption_status_id" unique="PRIMARY_KEY" >
+				<column name="status_id" />
+			</index>
+		</table>
+		<table name="displacement" >
+			<comment><![CDATA[توصيف نزوح الفرد والأسرة
+يمكن أن يكون للفرد أو الأسرة أكثر من عملية نزوح واحدة]]></comment>
+			<column name="person_id" type="int" jt="4" mandatory="y" />
+			<column name="region_id" type="int" jt="4" mandatory="y" />
+			<column name="date" type="date" jt="91" mandatory="y" />
+			<column name="organization_id" type="int" jt="4" mandatory="y" />
+			<column name="subbranch_id" type="int" jt="4" mandatory="y" />
+			<index name="pk_displacement_id" unique="PRIMARY_KEY" >
+				<column name="region_id" />
+				<column name="person_id" />
+				<column name="date" />
+				<column name="organization_id" />
+				<column name="subbranch_id" />
+			</index>
+			<fk name="fk_displacement_region" to_schema="administration" to_table="region" delete_action="restrict" update_action="cascade" >
+				<fk_column name="region_id" pk="id" />
+			</fk>
+			<fk name="fk_displacement_person" to_schema="basic" to_table="person" delete_action="restrict" update_action="cascade" >
+				<fk_column name="person_id" pk="person_id" />
+				<fk_column name="organization_id" pk="organization_id" />
+				<fk_column name="subbranch_id" pk="subbranch_id" />
+			</fk>
+		</table>
+		<table name="family" >
+			<comment><![CDATA[تجميع الأفراد ضمن أسرة]]></comment>
+			<column name="family_id" type="int" jt="4" mandatory="y" />
+			<column name="card_number" type="int" jt="4" />
+			<column name="giving_date" type="date" jt="91" />
+			<column name="is_woman_lead" type="bool" jt="-7" >
+				<defo>false</defo>
+			</column>
+			<index name="pk_family_id" unique="PRIMARY_KEY" >
+				<column name="family_id" />
+			</index>
+		</table>
+		<table name="health_status" >
+			<column name="person_id" type="int" jt="4" mandatory="y" />
+			<column name="status_id" type="int" length="1" jt="4" mandatory="y" />
+			<column name="notes" type="varchar" length="50" jt="12" />
+			<column name="organization_id" type="int" jt="4" mandatory="y" />
+			<column name="subbranch_id" type="int" jt="4" mandatory="y" />
+			<index name="pk_health_status_status_id" unique="PRIMARY_KEY" >
+				<column name="status_id" />
+				<column name="person_id" />
+				<column name="organization_id" />
+				<column name="subbranch_id" />
+			</index>
+			<fk name="fk_health_status_subbranch" to_schema="basic" to_table="person" delete_action="restrict" update_action="cascade" >
+				<fk_column name="person_id" pk="person_id" />
+				<fk_column name="organization_id" pk="organization_id" />
+				<fk_column name="subbranch_id" pk="subbranch_id" />
+			</fk>
+			<fk name="fk_health_status" to_schema="basic" to_table="chronic_desciption" delete_action="restrict" update_action="cascade" >
+				<fk_column name="status_id" pk="status_id" />
+			</fk>
+		</table>
+		<table name="person" >
+			<comment><![CDATA[معلومات عن الفرد المكون للأسرة]]></comment>
+			<column name="person_id" type="int" jt="4" mandatory="y" autoincrement="y" />
+			<column name="family_id" type="int" jt="4" />
+			<column name="first_name" type="varchar" length="20" jt="12" mandatory="y" />
+			<column name="father_name" type="varchar" length="20" jt="12" mandatory="y" />
+			<column name="last_name" type="varchar" length="20" jt="12" mandatory="y" />
+			<column name="mother" type="varchar" length="20" jt="12" mandatory="y" />
+			<column name="fingerprint" type="blob" jt="2004" />
+			<column name="landline" type="varchar" length="8" jt="12" />
+			<column name="cellphone" type="varchar" length="10" jt="12" />
+			<column name="address_extra_info" type="text" length="100" jt="-1" />
+			<column name="family_card_number" type="bigint" length="25" jt="-5" mandatory="y" />
+			<column name="studies" type="int" jt="4" />
+			<column name="health_record" type="text" jt="-1" />
+			<column name="birth_date" type="date" jt="91" mandatory="y" />
+			<column name="family_position" type="int" jt="4" />
+			<column name="national_number" type="bigint" jt="-5" />
+			<column name="is_family_head" type="bool" jt="-7" >
+				<defo>false</defo>
+			</column>
+			<column name="is_alive" type="bool" jt="-7" mandatory="y" >
+				<defo>true</defo>
+			</column>
+			<column name="neighborhood" type="int" jt="4" mandatory="y" />
+			<column name="carrier" type="varchar" length="100" jt="12" />
+			<column name="salary" type="int" jt="4" />
+			<column name="place_of_work" type="varchar" length="100" jt="12" />
+			<column name="subbranch_id" type="int" jt="4" mandatory="y" />
+			<column name="organization_id" type="int" jt="4" mandatory="y" />
+			<index name="pk_person_id" unique="PRIMARY_KEY" >
+				<column name="person_id" />
+				<column name="subbranch_id" />
+				<column name="organization_id" />
+			</index>
+			<fk name="f_id" to_schema="basic" to_table="family" >
+				<fk_column name="family_id" pk="family_id" />
+			</fk>
+			<fk name="fk_person_region" to_schema="administration" to_table="region" delete_action="restrict" update_action="cascade" >
+				<fk_column name="neighborhood" pk="id" />
+			</fk>
+			<fk name="fk_person_organizaiton" to_schema="administration" to_table="subbranch" >
+				<fk_column name="subbranch_id" pk="id" />
+				<fk_column name="organization_id" pk="organization_id" />
+			</fk>
+		</table>
+		<table name="zone" >
+			<column name="person_id" type="int" jt="4" mandatory="y" />
+			<column name="card_number" type="int" jt="4" mandatory="y" />
+			<column name="zone_name" type="text" jt="-1" />
+			<column name="village" type="text" jt="-1" />
+			<column name="organization_id" type="int" jt="4" mandatory="y" />
+			<column name="subbranch_id" type="int" jt="4" mandatory="y" />
+			<index name="idx_zone" unique="PRIMARY_KEY" >
+				<column name="person_id" />
+				<column name="card_number" />
+				<column name="organization_id" />
+				<column name="subbranch_id" />
+			</index>
+			<fk name="fk_zone_person" to_schema="basic" to_table="person" >
+				<fk_column name="person_id" pk="person_id" />
+				<fk_column name="organization_id" pk="organization_id" />
+				<fk_column name="subbranch_id" pk="subbranch_id" />
+			</fk>
+		</table>
+	</schema>
+	<layout name="Default Layout" id="Layout_deb3f5" show_relation="columns" >
+		<entity schema="administration" name="region" color="FF0000" x="48" y="400" />
+		<entity schema="administration" name="internationorganization" color="FF0000" x="208" y="432" >
+			<callout x="368" y="432" pointer="Round" />
+		</entity>
+		<entity schema="basic" name="family" color="008000" x="1232" y="496" >
+			<callout x="1232" y="464" pointer="SV" />
+		</entity>
+		<entity schema="administration" name="subbranch" color="FF0000" x="288" y="160" >
+			<callout x="288" y="80" pointer="SV" />
+		</entity>
+		<entity schema="administration" name="organizaiton" color="FF0000" x="64" y="192" />
+		<entity schema="basic" name="displacement" color="008000" x="960" y="192" >
+			<callout x="1056" y="336" pointer="NV" />
+		</entity>
+		<entity schema="basic" name="person" color="008000" x="576" y="544" >
+			<callout x="576" y="992" pointer="NE" />
+		</entity>
+		<entity schema="basic" name="health_status" color="008000" x="1008" y="832" />
+		<entity schema="basic" name="chronic_desciption" color="008000" x="1216" y="864" >
+			<callout x="1216" y="976" pointer="NE" />
+		</entity>
+		<entity schema="basic" name="zone" color="008000" x="1136" y="672" />
+		<group name="Administration" color="FF0000" >
+			<entity schema="administration" name="organizaiton" />
+			<entity schema="administration" name="subbranch" />
+			<entity schema="administration" name="internationorganization" />
+			<entity schema="administration" name="region" />
+		</group>
+		<group name="Basic Information" color="008000" >
+			<entity schema="basic" name="chronic_desciption" />
+			<entity schema="basic" name="displacement" />
+			<entity schema="basic" name="family" />
+			<entity schema="basic" name="health_status" />
+			<entity schema="basic" name="person" />
+			<entity schema="basic" name="zone" />
+		</group>
+	</layout>
+</project>
