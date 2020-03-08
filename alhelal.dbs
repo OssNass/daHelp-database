@@ -167,6 +167,9 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<column name="subbranch_id" />
 				<column name="organization_id" />
 			</index>
+			<index name="unq_person_person_id" unique="UNIQUE" >
+				<column name="person_id" />
+			</index>
 			<fk name="f_id" to_schema="basic" to_table="family" >
 				<fk_column name="family_id" pk="family_id" />
 			</fk>
@@ -179,6 +182,8 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			</fk>
 			<fk name="fk_person_non_food" to_schema="relief" to_table="non_food" >
 				<fk_column name="person_id" pk="person_id" />
+				<fk_column name="subbranch_id" pk="subbranch_id" />
+				<fk_column name="organization_id" pk="organization_id" />
 			</fk>
 		</table>
 		<table name="zone" >
@@ -209,7 +214,7 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			<column name="cobon_id" type="int" jt="4" />
 			<index name="unq_cobon_cobon_id" unique="UNIQUE" >
 				<column name="cobon_id" />
-			</index>options="engine=InnoDB" 
+			</index>
 		</table>
 		<table name="extra_family_info" >
 			<column name="family_id" type="int" jt="4" mandatory="y" />
@@ -218,7 +223,7 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			<column name="residence_description" type="text" jt="-1" />
 			<index name="pk_extra_family_info_family_id" unique="PRIMARY_KEY" >
 				<column name="family_id" />
-			</index>options="engine=InnoDB" 
+			</index>
 		</table>
 		<table name="food" >
 			<column name="family_id" type="int" jt="4" mandatory="y" />
@@ -241,48 +246,55 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			</index>
 			<fk name="fk_materials_cobon" to_schema="relief" to_table="cobon" >
 				<fk_column name="cobon_id" pk="cobon_id" />
-			</fk>options="engine=InnoDB" 
+			</fk>
 		</table>
 		<table name="non_food" >
 			<column name="person_id" type="int" jt="4" mandatory="y" />
 			<column name="n_date" type="date" jt="91" />
 			<column name="material_id" type="int" jt="4" />
+			<column name="subbranch_id" type="int" jt="4" />
+			<column name="organization_id" type="int" jt="4" />
 			<index name="unq_non_food_person_id" unique="UNIQUE" >
 				<column name="person_id" />
 			</index>
+			<index name="unq_non_food_person_id_0" unique="UNIQUE" >
+				<column name="person_id" />
+				<column name="subbranch_id" />
+				<column name="organization_id" />
+			</index>
 			<fk name="fk_non_food_materials" to_schema="relief" to_table="materials" >
 				<fk_column name="material_id" pk="materials_id" />
-			</fk>options="engine=InnoDB" 
+			</fk>
 		</table>
 	</schema>
 	<layout name="Default Layout" id="Layout_deb3f5" show_relation="columns" >
-		<entity schema="administration" name="region" color="FF0000" x="112" y="400" />
-		<entity schema="administration" name="internationorganization" color="FF0000" x="272" y="432" >
-			<callout x="432" y="432" pointer="Round" />
+		<entity schema="administration" name="region" color="FF0000" x="128" y="400" />
+		<entity schema="administration" name="internationorganization" color="FF0000" x="288" y="432" >
+			<callout x="448" y="432" pointer="Round" />
 		</entity>
-		<entity schema="administration" name="subbranch" color="FF0000" x="352" y="160" >
-			<callout x="352" y="80" pointer="SV" />
+		<entity schema="administration" name="subbranch" color="FF0000" x="368" y="160" >
+			<callout x="368" y="80" pointer="SV" />
 		</entity>
-		<entity schema="administration" name="organizaiton" color="FF0000" x="128" y="192" />
-		<entity schema="basic" name="displacement" color="008000" x="1024" y="192" >
-			<callout x="1120" y="336" pointer="NV" />
+		<entity schema="administration" name="organizaiton" color="FF0000" x="144" y="192" />
+		<entity schema="basic" name="displacement" color="008000" x="1040" y="192" >
+			<callout x="1136" y="336" pointer="NV" />
 		</entity>
-		<entity schema="basic" name="health_status" color="008000" x="1072" y="832" />
-		<entity schema="basic" name="chronic_desciption" color="008000" x="1280" y="864" >
-			<callout x="1280" y="976" pointer="NE" />
+		<entity schema="basic" name="health_status" color="008000" x="1088" y="832" />
+		<entity schema="basic" name="chronic_desciption" color="008000" x="1296" y="864" >
+			<callout x="1296" y="976" pointer="NE" />
 		</entity>
-		<entity schema="basic" name="zone" color="008000" x="1200" y="672" />
-		<entity schema="relief" name="cobon" color="C1D8EE" x="272" y="960" />
-		<entity schema="relief" name="extra_family_info" color="C1D8EE" x="256" y="608" />
-		<entity schema="basic" name="family" color="008000" x="1296" y="496" >
-			<callout x="1296" y="464" pointer="SV" />
+		<entity schema="basic" name="zone" color="008000" x="1216" y="672" />
+		<entity schema="relief" name="cobon" color="C1D8EE" x="288" y="960" />
+		<entity schema="relief" name="extra_family_info" color="C1D8EE" x="272" y="608" />
+		<entity schema="basic" name="family" color="008000" x="1312" y="496" >
+			<callout x="1312" y="464" pointer="SV" />
 		</entity>
-		<entity schema="basic" name="person" color="008000" x="640" y="544" >
-			<callout x="640" y="992" pointer="NE" />
+		<entity schema="relief" name="materials" color="C1D8EE" x="256" y="768" />
+		<entity schema="relief" name="food" color="C1D8EE" x="464" y="768" />
+		<entity schema="basic" name="person" color="008000" x="656" y="544" >
+			<callout x="656" y="992" pointer="NE" />
 		</entity>
-		<entity schema="relief" name="materials" color="C1D8EE" x="240" y="768" />
-		<entity schema="relief" name="food" color="C1D8EE" x="448" y="768" />
-		<entity schema="relief" name="non_food" color="C1D8EE" x="48" y="768" />
+		<entity schema="relief" name="non_food" color="C1D8EE" x="48" y="752" />
 		<group name="Administration" color="FF0000" >
 			<entity schema="administration" name="organizaiton" />
 			<entity schema="administration" name="subbranch" />
