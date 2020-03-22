@@ -28,7 +28,9 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			<column name="id" type="int" jt="4" mandatory="y" autoincrement="y" />
 			<column name="name" type="varchar" length="20" jt="12" />
 			<column name="parent_id" type="int" jt="4" />
-			<column name="level" type="enum" jt="12" />
+			<column name="level" type="int" jt="4" >
+				<defo>0</defo>
+			</column>
 			<index name="pk_region_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -341,8 +343,8 @@ material_type يعطي نوع المادة (غذائية، غير غذائية) 
 			</fk>
 		</table>
 	</schema>
+	<connector name="MariaDb" database="MariaDb" driver_class="org.mariadb.jdbc.Driver" driver_jar="mariadb-java-client-2.4.2.jar" driver_desc="Standard" host="localhost" port="3306" instance="daHelp" user="root" passwd="cm9vdA==" />
 	<layout name="Default Layout" id="Layout_deb3f5" show_relation="columns" >
-		<entity schema="administration" name="region" color="FF0000" x="816" y="400" />
 		<entity schema="administration" name="internationorganization" color="FF0000" x="976" y="432" >
 			<callout x="1136" y="432" pointer="Round" />
 		</entity>
@@ -377,6 +379,7 @@ material_type يعطي نوع المادة (غذائية، غير غذائية) 
 		<entity schema="basic" name="person" color="008000" x="1472" y="368" >
 			<callout x="1472" y="816" pointer="NE" />
 		</entity>
+		<entity schema="administration" name="region" color="FF0000" x="816" y="400" />
 		<group name="Administration" color="FF0000" >
 			<entity schema="administration" name="organizaiton" />
 			<entity schema="administration" name="subbranch" />
