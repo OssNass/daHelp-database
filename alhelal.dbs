@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="Alhelal" id="Project_3b6d897" template="Default" database="MariaDb" >
+<project name="Alhelal" id="Project_3b6d897" template="Default" database="PostgreSQL" >
 	<schema name="administration" schemaname="administration" options="" >
 		<table name="internationorganization" >
 			<comment><![CDATA[معلومات عن المنظمات الدولية الداعمة
 ICRC,DRC,UNHCR,...etc]]></comment>
-			<column name="id" type="int" jt="4" mandatory="y" autoincrement="y" />
-			<column name="name" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="id" type="serial" jt="4" mandatory="y" autoincrement="y" />
+			<column name="name" type="varchar" length="100" decimal="0" jt="12" mandatory="y" />
 			<index name="pk_internationorganization_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
 		</table>
 		<table name="organizaiton" >
 			<comment><![CDATA[توفير معلومات عن المنظمة التي تدير العمليات الإغاثية]]></comment>
-			<column name="id" type="int" jt="4" mandatory="y" autoincrement="y" />
-			<column name="name" type="varchar" length="100" jt="12" mandatory="y" />
-			<column name="telephone" type="varchar" length="10" jt="12" />
-			<column name="address" type="varchar" length="100" jt="12" />
-			<column name="hq_city" type="varchar" length="100" jt="12" >
+			<column name="id" type="serial" jt="4" mandatory="y" autoincrement="y" />
+			<column name="name" type="varchar" length="100" decimal="0" jt="12" mandatory="y" />
+			<column name="telephone" type="varchar" length="10" decimal="0" jt="12" />
+			<column name="address" type="varchar" length="100" decimal="0" jt="12" />
+			<column name="hq_city" type="varchar" length="100" decimal="0" jt="12" >
 				<comment><![CDATA[The location of the headquarters of the organization]]></comment>
 			</column>
 			<index name="pk_organizaiton_id" unique="PRIMARY_KEY" >
@@ -25,10 +25,10 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 		</table>
 		<table name="region" >
 			<comment><![CDATA[معلومات عن التقسيمات الإدارية السورية]]></comment>
-			<column name="id" type="int" jt="4" mandatory="y" autoincrement="y" />
-			<column name="name" type="varchar" length="20" jt="12" />
-			<column name="parent_id" type="int" jt="4" />
-			<column name="level" type="int" jt="4" >
+			<column name="id" type="serial" jt="4" mandatory="y" autoincrement="y" />
+			<column name="name" type="varchar" length="20" decimal="0" jt="12" />
+			<column name="parent_id" type="integer" decimal="0" jt="4" />
+			<column name="level" type="integer" decimal="0" jt="4" >
 				<defo>0</defo>
 			</column>
 			<index name="pk_region_id" unique="PRIMARY_KEY" >
@@ -42,13 +42,13 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			<comment><![CDATA[توفير معلومات عن الأفرع التابعة لهذه المنظمة،
 في حال كانت المنظمة لا تمتلك أفرع،
  يتم إدراج فرع واحد فقط تتطابق معلوماته معلومات المنظمة]]></comment>
-			<column name="name" type="varchar" length="100" jt="12" mandatory="y" />
-			<column name="id" type="int" jt="4" mandatory="y" autoincrement="y" />
-			<column name="organization_id" type="int" jt="4" mandatory="y" />
-			<column name="parent_id" type="int" jt="4" />
-			<column name="telephone" type="varchar" length="10" jt="12" />
-			<column name="subbranch_city" type="varchar" length="20" jt="12" />
-			<column name="address" type="varchar" length="100" jt="12" />
+			<column name="name" type="varchar" length="100" decimal="0" jt="12" mandatory="y" />
+			<column name="id" type="serial" jt="4" mandatory="y" autoincrement="y" />
+			<column name="organization_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="parent_id" type="integer" decimal="0" jt="4" />
+			<column name="telephone" type="varchar" length="10" decimal="0" jt="12" />
+			<column name="subbranch_city" type="varchar" length="20" decimal="0" jt="12" />
+			<column name="address" type="varchar" length="100" decimal="0" jt="12" />
 			<index name="pk_subbranch_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 				<column name="organization_id" />
@@ -64,9 +64,9 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 	<schema name="basic" schemaname="basic" >
 		<table name="chronic_desciption" >
 			<comment><![CDATA[توصيف الأمراض المزمنة]]></comment>
-			<column name="status_id" type="int" length="1" jt="4" mandatory="y" />
-			<column name="status_name" type="varchar" length="50" jt="12" mandatory="y" />
-			<column name="code" type="varchar" length="5" jt="12" mandatory="y" />
+			<column name="status_id" type="serial" jt="4" mandatory="y" />
+			<column name="status_name" type="varchar" length="50" decimal="0" jt="12" mandatory="y" />
+			<column name="code" type="varchar" length="5" decimal="0" jt="12" mandatory="y" />
 			<index name="pk_chronic_desciption_status_id" unique="PRIMARY_KEY" >
 				<column name="status_id" />
 			</index>
@@ -74,11 +74,11 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 		<table name="displacement" >
 			<comment><![CDATA[توصيف نزوح الفرد والأسرة
 يمكن أن يكون للفرد أو الأسرة أكثر من عملية نزوح واحدة]]></comment>
-			<column name="person_id" type="int" jt="4" mandatory="y" />
-			<column name="region_id" type="int" jt="4" mandatory="y" />
-			<column name="date" type="date" jt="91" mandatory="y" />
-			<column name="organization_id" type="int" jt="4" mandatory="y" />
-			<column name="subbranch_id" type="int" jt="4" mandatory="y" />
+			<column name="person_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="region_id" type="integer" jt="4" mandatory="y" />
+			<column name="date" type="date" length="0" decimal="0" jt="91" mandatory="y" />
+			<column name="organization_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="subbranch_id" type="integer" decimal="0" jt="4" mandatory="y" />
 			<index name="pk_displacement_id" unique="PRIMARY_KEY" >
 				<column name="region_id" />
 				<column name="person_id" />
@@ -97,10 +97,10 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 		</table>
 		<table name="family" >
 			<comment><![CDATA[تجميع الأفراد ضمن أسرة]]></comment>
-			<column name="family_id" type="int" jt="4" mandatory="y" />
-			<column name="card_number" type="int" jt="4" />
-			<column name="giving_date" type="date" jt="91" />
-			<column name="is_woman_lead" type="bool" jt="-7" >
+			<column name="family_id" type="serial" jt="4" mandatory="y" />
+			<column name="card_number" type="integer" decimal="0" jt="4" />
+			<column name="giving_date" type="date" length="0" decimal="0" jt="91" />
+			<column name="is_woman_lead" type="bool" length="0" decimal="0" jt="-7" >
 				<defo>false</defo>
 			</column>
 			<index name="pk_family_id" unique="PRIMARY_KEY" >
@@ -111,11 +111,11 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			</fk>
 		</table>
 		<table name="health_status" >
-			<column name="person_id" type="int" jt="4" mandatory="y" />
-			<column name="status_id" type="int" length="1" jt="4" mandatory="y" />
-			<column name="notes" type="varchar" length="50" jt="12" />
-			<column name="organization_id" type="int" jt="4" mandatory="y" />
-			<column name="subbranch_id" type="int" jt="4" mandatory="y" />
+			<column name="person_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="status_id" type="integer" length="1" decimal="0" jt="4" mandatory="y" />
+			<column name="notes" type="varchar" length="50" decimal="0" jt="12" />
+			<column name="organization_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="subbranch_id" type="integer" decimal="0" jt="4" mandatory="y" />
 			<index name="pk_health_status_status_id" unique="PRIMARY_KEY" >
 				<column name="status_id" />
 				<column name="person_id" />
@@ -133,34 +133,34 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 		</table>
 		<table name="person" >
 			<comment><![CDATA[معلومات عن الفرد المكون للأسرة]]></comment>
-			<column name="person_id" type="int" jt="4" mandatory="y" autoincrement="y" />
-			<column name="organization_id" type="int" jt="4" mandatory="y" />
-			<column name="subbranch_id" type="int" jt="4" mandatory="y" />
-			<column name="family_id" type="int" jt="4" />
-			<column name="first_name" type="varchar" length="20" jt="12" mandatory="y" />
-			<column name="father_name" type="varchar" length="20" jt="12" mandatory="y" />
-			<column name="last_name" type="varchar" length="20" jt="12" mandatory="y" />
-			<column name="mother" type="varchar" length="20" jt="12" mandatory="y" />
-			<column name="fingerprint" type="blob" jt="2004" />
-			<column name="landline" type="varchar" length="8" jt="12" />
-			<column name="cellphone" type="varchar" length="10" jt="12" />
-			<column name="address_extra_info" type="text" length="100" jt="-1" />
-			<column name="family_card_number" type="bigint" length="25" jt="-5" mandatory="y" />
-			<column name="studies" type="int" jt="4" />
-			<column name="health_record" type="text" jt="-1" />
-			<column name="birth_date" type="date" jt="91" mandatory="y" />
-			<column name="family_position" type="int" jt="4" />
-			<column name="national_number" type="bigint" jt="-5" />
-			<column name="is_family_head" type="bool" jt="-7" >
+			<column name="person_id" type="serial" jt="4" mandatory="y" autoincrement="y" />
+			<column name="organization_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="subbranch_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="family_id" type="integer" decimal="0" jt="4" />
+			<column name="first_name" type="varchar" length="20" decimal="0" jt="12" mandatory="y" />
+			<column name="father_name" type="varchar" length="20" decimal="0" jt="12" mandatory="y" />
+			<column name="last_name" type="varchar" length="20" decimal="0" jt="12" mandatory="y" />
+			<column name="mother" type="varchar" length="20" decimal="0" jt="12" mandatory="y" />
+			<column name="fingerprint" type="bytea" length="255" decimal="0" jt="-2" />
+			<column name="landline" type="varchar" length="8" decimal="0" jt="12" />
+			<column name="cellphone" type="varchar" length="10" decimal="0" jt="12" />
+			<column name="address_extra_info" type="text" length="0" decimal="0" jt="12" />
+			<column name="family_card_number" type="bigint" length="0" decimal="0" jt="-5" mandatory="y" />
+			<column name="studies" type="integer" decimal="0" jt="4" />
+			<column name="health_record" type="text" length="0" decimal="0" jt="12" />
+			<column name="birth_date" type="date" length="0" decimal="0" jt="91" mandatory="y" />
+			<column name="family_position" type="integer" decimal="0" jt="4" />
+			<column name="national_number" type="bigint" length="0" decimal="0" jt="-5" />
+			<column name="is_family_head" type="bool" length="0" decimal="0" jt="-7" >
 				<defo>false</defo>
 			</column>
-			<column name="is_alive" type="bool" jt="-7" mandatory="y" >
+			<column name="is_alive" type="bool" length="0" decimal="0" jt="-7" mandatory="y" >
 				<defo>true</defo>
 			</column>
-			<column name="neighborhood" type="int" jt="4" mandatory="y" />
-			<column name="carrier" type="varchar" length="100" jt="12" />
-			<column name="salary" type="int" jt="4" />
-			<column name="place_of_work" type="varchar" length="100" jt="12" />
+			<column name="neighborhood" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="carrier" type="varchar" length="100" decimal="0" jt="12" />
+			<column name="salary" type="integer" decimal="0" jt="4" />
+			<column name="place_of_work" type="varchar" length="100" decimal="0" jt="12" />
 			<index name="pk_person_id" unique="PRIMARY_KEY" >
 				<column name="person_id" />
 				<column name="subbranch_id" />
@@ -186,12 +186,12 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			</fk>
 		</table>
 		<table name="zone" >
-			<column name="person_id" type="int" jt="4" mandatory="y" />
-			<column name="card_number" type="int" jt="4" mandatory="y" />
-			<column name="zone_name" type="text" jt="-1" />
-			<column name="village" type="text" jt="-1" />
-			<column name="organization_id" type="int" jt="4" mandatory="y" />
-			<column name="subbranch_id" type="int" jt="4" mandatory="y" />
+			<column name="person_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="card_number" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="zone_name" type="text" length="0" decimal="0" jt="12" />
+			<column name="village" type="text" length="0" decimal="0" jt="12" />
+			<column name="organization_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="subbranch_id" type="integer" decimal="0" jt="4" mandatory="y" />
 			<index name="idx_zone" unique="PRIMARY_KEY" >
 				<column name="person_id" />
 				<column name="card_number" />
@@ -205,22 +205,237 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			</fk>
 		</table>
 	</schema>
+	<schema name="clinic" schemaname="clinic" >
+		<table name="clinics" >
+			<comment><![CDATA[معلومات عن العيادات]]></comment>
+			<column name="clinic_id" type="serial" jt="4" mandatory="y" autoincrement="y" />
+			<column name="clinic_name" type="varchar" length="20" decimal="0" jt="12" mandatory="y" />
+			<index name="pk_clinics_clinic_id" unique="PRIMARY_KEY" >
+				<column name="clinic_id" />
+			</index>
+		</table>
+		<table name="diagnosis" >
+			<comment><![CDATA[التشخيص (الأمراض)]]></comment>
+			<column name="examination_id" type="serial" jt="4" mandatory="y" />
+			<column name="disease_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="notes" type="varchar" length="600" decimal="0" jt="12" />
+			<column name="personid" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="organization_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="subbranch_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="visit_date" type="date" length="0" decimal="0" jt="91" mandatory="y" />
+			<index name="idx_diagnosis" unique="PRIMARY_KEY" >
+				<column name="examination_id" />
+				<column name="disease_id" />
+			</index>
+			<fk name="fk_diagnosis_disease" to_schema="clinic" to_table="disease" >
+				<fk_column name="disease_id" pk="disease_id" />
+			</fk>
+			<fk name="fk_diagnosis_examintation" to_schema="clinic" to_table="examintation" >
+				<fk_column name="examination_id" pk="examination_id" />
+			</fk>
+			<fk name="fk_diagnosis_visit" to_schema="clinic" to_table="visit" delete_action="restrict" update_action="cascade" >
+				<fk_column name="personid" pk="person_id" />
+				<fk_column name="organization_id" pk="organization_id" />
+				<fk_column name="subbranch_id" pk="subbranch_id" />
+				<fk_column name="visit_date" pk="visit_date" />
+			</fk>
+		</table>
+		<table name="disease" >
+			<comment><![CDATA[الأمراض]]></comment>
+			<column name="disease_id" type="serial" jt="4" mandatory="y" autoincrement="y" />
+			<column name="disease_code" type="varchar" length="20" decimal="0" jt="12" mandatory="y" />
+			<column name="disease_name" type="varchar" length="40" decimal="0" jt="12" />
+			<index name="pk_disease_disease_id" unique="PRIMARY_KEY" >
+				<column name="disease_id" />
+			</index>
+		</table>
+		<table name="doctor" >
+			<comment><![CDATA[معلومات عن الأطباء]]></comment>
+			<column name="doctor_id" type="serial" jt="4" mandatory="y" autoincrement="y" />
+			<column name="first_name" type="varchar" length="20" decimal="0" jt="12" />
+			<column name="last_name" type="varchar" length="20" decimal="0" jt="12" mandatory="y" />
+			<column name="clinic_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<index name="pk_doctor_doctor_id" unique="PRIMARY_KEY" >
+				<column name="doctor_id" />
+				<column name="clinic_id" />
+			</index>
+			<index name="unq_doctor_clinic_id" unique="UNIQUE" >
+				<column name="clinic_id" />
+				<column name="doctor_id" />
+			</index>
+			<fk name="fk_doctor_clinics" to_schema="clinic" to_table="clinics" >
+				<fk_column name="clinic_id" pk="clinic_id" />
+			</fk>
+		</table>
+		<table name="examintation" >
+			<comment><![CDATA[المعاينة]]></comment>
+			<column name="examination_id" type="integer" decimal="0" jt="4" mandatory="y" autoincrement="y" />
+			<column name="visit_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="doctor_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="prescrition_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<index name="pk_examintation_examination_id" unique="PRIMARY_KEY" >
+				<column name="examination_id" />
+			</index>
+			<index name="unq_examintation_prescrition_id" unique="UNIQUE" >
+				<column name="prescrition_id" />
+			</index>
+			<fk name="fk_examintation_doctor" to_schema="clinic" to_table="doctor" >
+				<fk_column name="doctor_id" pk="doctor_id" />
+			</fk>
+			<fk name="fk_examintation_visit" to_schema="clinic" to_table="visit" />
+		</table>
+		<table name="medicine" >
+			<comment><![CDATA[معلومات عن الادوية]]></comment>
+			<column name="medicine_id" type="serial" jt="4" mandatory="y" autoincrement="y" />
+			<column name="medicine-name" type="varchar" length="40" decimal="0" jt="12" mandatory="y" />
+			<column name="medicine_calibre" type="varchar" length="20" decimal="0" jt="12" mandatory="y" />
+			<column name="medicine_form" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="active_material" type="varchar" length="40" decimal="0" jt="12" mandatory="y" />
+			<column name="code" type="varchar" length="3" jt="12" mandatory="y" />
+			<index name="pk_medicine_medicine_id" unique="PRIMARY_KEY" >
+				<column name="medicine_id" />
+			</index>
+			<index name="unq_medicine_code" unique="UNIQUE" >
+				<column name="code" />
+			</index>
+		</table>
+		<table name="medicine_out" >
+			<comment><![CDATA[الدواء المخرج]]></comment>
+			<column name="medicine_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="shipment_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="quantity" type="integer" decimal="0" jt="4" />
+			<column name="prescription_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<index name="idx_medicine_out" unique="PRIMARY_KEY" >
+				<column name="medicine_id" />
+				<column name="shipment_id" />
+				<column name="prescription_id" />
+			</index>
+			<fk name="fk_medicine_out_prescription" to_schema="clinic" to_table="prescription" >
+				<fk_column name="prescription_id" pk="prescription_id" />
+			</fk>
+			<fk name="fk_medicine_out_pharmacy_stock" to_schema="clinic" to_table="pharmacy_stock" >
+				<fk_column name="medicine_id" pk="medicine_id" />
+				<fk_column name="shipment_id" pk="shipment_id" />
+			</fk>
+		</table>
+		<table name="pharmacy_movement_out" >
+			<comment><![CDATA[movement_type: إعادة، إتلاف، صرف وصفة]]></comment>
+			<column name="movement_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="movemnet_type" type="integer" decimal="0" jt="4" mandatory="y" >
+				<comment><![CDATA[movement_type: إعادة، إتلاف، صرف وصفة]]></comment>
+			</column>
+			<column name="movement_date" type="date" length="0" decimal="0" jt="91" mandatory="y" />
+			<column name="notes" type="varchar" length="600" decimal="0" jt="12" />
+			<column name="prescrition_id" type="integer" decimal="0" jt="4" />
+			<index name="pk_medicine_movement_out_movement_id" unique="PRIMARY_KEY" >
+				<column name="movement_id" />
+			</index>
+			<fk name="fk_pharmacy_movement_out" to_schema="clinic" to_table="prescription" />
+		</table>
+		<table name="pharmacy_stock" >
+			<comment><![CDATA[مخزن الصيدلية]]></comment>
+			<column name="shipment_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="medicine_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="production_date" type="date" length="0" decimal="0" jt="91" mandatory="y" />
+			<column name="expiration_date" type="date" length="0" decimal="0" jt="91" mandatory="y" />
+			<column name="quantity" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="current_quantity" type="integer" decimal="0" jt="4" mandatory="y" />
+			<index name="pk_shipment_item_item_id" unique="PRIMARY_KEY" >
+				<column name="shipment_id" />
+				<column name="medicine_id" />
+			</index>
+			<index name="unq_pharmacy_stock_medicine_id" unique="UNIQUE" >
+				<column name="medicine_id" />
+				<column name="shipment_id" />
+			</index>
+			<fk name="fk_shipment_item_shipment" to_schema="clinic" to_table="shipment" >
+				<fk_column name="shipment_id" pk="shipment_id" />
+			</fk>
+			<fk name="fk_shipment_item_medicine" to_schema="clinic" to_table="medicine" >
+				<fk_column name="medicine_id" pk="medicine_id" />
+			</fk>
+		</table>
+		<table name="prescription" >
+			<comment><![CDATA[الوصفة(  يوضع بالجدول ادوية الوصفة )]]></comment>
+			<column name="prescription_id" type="serial" jt="4" mandatory="y" autoincrement="y" />
+			<column name="medicine_code" type="varchar" length="20" decimal="0" jt="12" mandatory="y" />
+			<column name="dose" type="varchar" length="100" decimal="0" jt="12" />
+			<column name="quantity" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="person_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="organization_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="subbranch_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="visit_date" type="date" length="0" decimal="0" jt="91" mandatory="y" />
+			<index name="pk_prescription_prescription_id" unique="PRIMARY_KEY" >
+				<column name="prescription_id" />
+			</index>
+			<fk name="fk_prescription_examintation" to_schema="clinic" to_table="examintation" />
+			<fk name="fk_prescription_medicine" to_schema="clinic" to_table="medicine" >
+				<fk_column name="medicine_code" pk="code" />
+			</fk>
+			<fk name="fk_prescription_visit" to_schema="clinic" to_table="visit" >
+				<fk_column name="person_id" pk="person_id" />
+				<fk_column name="organization_id" pk="organization_id" />
+				<fk_column name="subbranch_id" pk="subbranch_id" />
+				<fk_column name="visit_date" pk="visit_date" />
+			</fk>
+		</table>
+		<table name="shipment" >
+			<comment><![CDATA[شحن الدواء]]></comment>
+			<column name="shipment_id" type="serial" jt="4" mandatory="y" autoincrement="y" />
+			<column name="shipment_date" type="date" length="0" decimal="0" jt="91" mandatory="y" />
+			<column name="shipment_source_id" type="integer" length="20" decimal="0" jt="4" />
+			<index name="pk_shipment_shipment_id" unique="PRIMARY_KEY" >
+				<column name="shipment_id" />
+			</index>
+			<fk name="fk_shipment_internationorganization" to_schema="administration" to_table="internationorganization" delete_action="restrict" update_action="cascade" >
+				<fk_column name="shipment_source_id" pk="id" />
+			</fk>
+		</table>
+		<table name="visit" >
+			<comment><![CDATA[معلومات عن الزيارات]]></comment>
+			<column name="person_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="organization_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="subbranch_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="visit_date" type="date" length="0" decimal="0" jt="91" mandatory="y" />
+			<column name="fee" type="integer" decimal="0" jt="4" >
+				<defo>0</defo>
+				<comment><![CDATA[الرسوم]]></comment>
+			</column>
+			<column name="doctor_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="clinic_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<index name="pk_visit_visit_id" unique="PRIMARY_KEY" >
+				<column name="person_id" />
+				<column name="organization_id" />
+				<column name="subbranch_id" />
+				<column name="visit_date" />
+			</index>
+			<fk name="fk_visit_doctor" to_schema="clinic" to_table="doctor" delete_action="restrict" update_action="cascade" >
+				<fk_column name="clinic_id" pk="clinic_id" />
+				<fk_column name="doctor_id" pk="doctor_id" />
+			</fk>
+			<fk name="fk_visit_person" to_schema="basic" to_table="person" delete_action="restrict" update_action="cascade" >
+				<fk_column name="person_id" pk="person_id" />
+				<fk_column name="organization_id" pk="organization_id" />
+				<fk_column name="subbranch_id" pk="subbranch_id" />
+			</fk>
+		</table>
+	</schema>
 	<schema name="relief" schemaname="relief" >
 		<table name="cobon" >
-			<column name="family_id" type="int" jt="4" mandatory="y" />
-			<column name="person_id" type="int" jt="4" mandatory="y" />
-			<column name="subbranch_id" type="int" jt="4" mandatory="y" />
-			<column name="organization_id" type="int" jt="4" mandatory="y" />
-			<column name="number_of_items" type="int" jt="4" mandatory="y" >
+			<column name="family_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="person_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="subbranch_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="organization_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="number_of_items" type="integer" decimal="0" jt="4" mandatory="y" >
 				<defo>1</defo>
 			</column>
-			<column name="cobon_id" type="int" jt="4" mandatory="y" />
-			<column name="cobontype_id" type="int" jt="4" mandatory="y" />
-			<column name="cobon_issue_stamp" type="timestamp" jt="93" mandatory="y" >
+			<column name="cobon_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="cobontype_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="cobon_issue_stamp" type="timestamp" length="0" decimal="0" jt="93" mandatory="y" >
 				<defo>CURRENT_TIMESTAMP</defo>
 				<comment><![CDATA[من أهم الحقول يوضح وقت وتاريخ قطع الكوبون]]></comment>
 			</column>
-			<column name="cobon_recieve_stamp" type="timestamp" jt="93" >
+			<column name="cobon_recieve_stamp" type="timestamp" length="0" decimal="0" jt="93" >
 				<defo>CURRENT_TIMESTAMP</defo>
 				<comment><![CDATA[يوضح تاريخ ووقت استلام المعونة]]></comment>
 			</column>
@@ -242,35 +457,38 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 		</table>
 		<table name="cobon_type" >
 			<comment><![CDATA[نوع الكوبونات المتوفرة]]></comment>
-			<column name="id" type="int" jt="4" mandatory="y" autoincrement="y" />
-			<column name="name" type="varchar" length="100" jt="12" mandatory="y" />
-			<column name="prefix" type="varchar" length="3" jt="12" mandatory="y" >
+			<column name="id" type="serial" jt="4" mandatory="y" autoincrement="y" />
+			<column name="name" type="varchar" length="100" decimal="0" jt="12" mandatory="y" />
+			<column name="prefix" type="varchar" length="3" decimal="0" jt="12" mandatory="y" >
 				<comment><![CDATA[من أجل ترقيم الكوبونات، لكل نوع آلية ترقيم مختلفة]]></comment>
 			</column>
-			<column name="is_active" type="bool" jt="-7" mandatory="y" >
+			<column name="is_active" type="bool" length="0" decimal="0" jt="-7" mandatory="y" >
 				<defo>true</defo>
 				<comment><![CDATA[نطر كل فترة لتغير آلية الترقيم لتجنب التزوير، ولذلك نحتاج هذا الحقل ليوضح لنا
 إذا كان هذا النوع من الكوبونات فعال أم لا
 وفي حال أردنا إضافة كوبون غذائية بترقيم جديد
 لا داعي لتعديل ترقيم الكوبونات السابقة]]></comment>
 			</column>
+			<column name="current_number" type="integer" jt="4" mandatory="y" >
+				<defo>1</defo>
+			</column>
 			<index name="pk_cobon_type_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
 		</table>
 		<table name="extra_family_info" >
-			<column name="family_id" type="int" jt="4" mandatory="y" />
-			<column name="total_family_income" type="double" jt="8" />
-			<column name="residence_type" type="int" jt="4" />
-			<column name="residence_status" type="int" jt="4" />
+			<column name="family_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="total_family_income" type="double precision" decimal="0" jt="3" />
+			<column name="residence_type" type="integer" decimal="0" jt="4" />
+			<column name="residence_status" type="integer" decimal="0" jt="4" />
 			<index name="pk_extra_family_info_family_id" unique="PRIMARY_KEY" >
 				<column name="family_id" />
 			</index>
 		</table>
 		<table name="food" >
-			<column name="family_id" type="int" jt="4" mandatory="y" />
-			<column name="f_date" type="date" jt="91" />
-			<column name="material_id" type="int" jt="4" />
+			<column name="family_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="f_date" type="date" length="0" decimal="0" jt="91" />
+			<column name="material_id" type="integer" decimal="0" jt="4" />
 			<index name="pk_food_family_id" unique="PRIMARY_KEY" >
 				<column name="family_id" />
 			</index>
@@ -279,11 +497,11 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			</fk>
 		</table>
 		<table name="material_in_cobon" >
-			<column name="material_id" type="int" jt="4" mandatory="y" />
-			<column name="internantional_organization_id" type="int" jt="4" mandatory="y" />
-			<column name="cobon_id" type="int" jt="4" mandatory="y" />
-			<column name="cobon_type_id" type="int" jt="4" mandatory="y" />
-			<column name="number_of_items" type="int" jt="4" mandatory="y" >
+			<column name="material_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="internantional_organization_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="cobon_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="cobon_type_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="number_of_items" type="integer" decimal="0" jt="4" mandatory="y" >
 				<defo>1</defo>
 			</column>
 			<index name="idx_material_in_cobon" unique="PRIMARY_KEY" >
@@ -306,11 +524,11 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 حقل name يعطي اسم المادة
 unit وحدة القياس (سلة، قطعة(
 material_type يعطي نوع المادة (غذائية، غير غذائية) قيممته الإفتراضية 0 تعني غذائية]]></comment>
-			<column name="materials_id" type="int" jt="4" mandatory="y" />
-			<column name="internation_organization_id" type="int" jt="4" mandatory="y" />
-			<column name="name" type="varchar" length="100" jt="12" mandatory="y" />
-			<column name="unit" type="varchar" length="20" jt="12" mandatory="y" />
-			<column name="material_type" type="int" jt="4" mandatory="y" >
+			<column name="materials_id" type="serial" jt="4" mandatory="y" />
+			<column name="internation_organization_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="name" type="varchar" length="100" decimal="0" jt="12" mandatory="y" />
+			<column name="unit" type="varchar" length="20" decimal="0" jt="12" mandatory="y" />
+			<column name="material_type" type="integer" decimal="0" jt="4" mandatory="y" >
 				<defo>0</defo>
 			</column>
 			<index name="pk_materials_materials_id" unique="PRIMARY_KEY" >
@@ -325,11 +543,11 @@ material_type يعطي نوع المادة (غذائية، غير غذائية) 
 			</fk>
 		</table>
 		<table name="non_food" >
-			<column name="person_id" type="int" jt="4" mandatory="y" />
-			<column name="n_date" type="date" jt="91" />
-			<column name="material_id" type="int" jt="4" />
-			<column name="subbranch_id" type="int" jt="4" />
-			<column name="organization_id" type="int" jt="4" />
+			<column name="person_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="n_date" type="date" length="0" decimal="0" jt="91" />
+			<column name="material_id" type="integer" decimal="0" jt="4" />
+			<column name="subbranch_id" type="integer" decimal="0" jt="4" />
+			<column name="organization_id" type="integer" decimal="0" jt="4" />
 			<index name="unq_non_food_person_id" unique="UNIQUE" >
 				<column name="person_id" />
 			</index>
@@ -345,46 +563,81 @@ material_type يعطي نوع المادة (غذائية، غير غذائية) 
 	</schema>
 	<connector name="MariaDb" database="MariaDb" driver_class="org.mariadb.jdbc.Driver" driver_jar="mariadb-java-client-2.4.2.jar" driver_desc="Standard" host="localhost" port="3306" instance="daHelp" user="root" passwd="cm9vdA==" />
 	<layout name="Default Layout" id="Layout_deb3f5" show_relation="columns" >
-		<entity schema="administration" name="internationorganization" color="FF0000" x="976" y="432" >
-			<callout x="1136" y="432" pointer="Round" />
+		<entity schema="relief" name="material_in_cobon" color="C1D8EE" x="2448" y="944" />
+		<entity schema="relief" name="extra_family_info" color="C1D8EE" x="2160" y="1232" />
+		<entity schema="basic" name="zone" color="008000" x="1200" y="688" />
+		<entity schema="basic" name="health_status" color="008000" x="1456" y="688" />
+		<entity schema="clinic" name="visit" color="C1D8EE" x="496" y="160" >
+			<callout x="496" y="128" pointer="SV" />
 		</entity>
-		<entity schema="administration" name="subbranch" color="FF0000" x="1056" y="160" >
-			<callout x="1056" y="80" pointer="SV" />
+		<entity schema="clinic" name="diagnosis" color="C1D8EE" x="496" y="416" >
+			<callout x="496" y="384" pointer="SV" />
 		</entity>
-		<entity schema="basic" name="displacement" color="008000" x="1728" y="192" >
-			<callout x="1824" y="336" pointer="NV" />
+		<entity schema="clinic" name="prescription" color="C1D8EE" x="272" y="160" >
+			<callout x="208" y="112" pointer="SV" />
 		</entity>
-		<entity schema="basic" name="family" color="008000" x="1264" y="544" >
-			<callout x="1264" y="512" pointer="SV" />
+		<entity schema="clinic" name="clinics" color="C1D8EE" x="912" y="160" >
+			<callout x="912" y="128" pointer="SV" />
 		</entity>
-		<entity schema="relief" name="materials" color="C1D8EE" x="624" y="624" >
-			<callout x="320" y="528" pointer="SE" />
+		<entity schema="clinic" name="doctor" color="C1D8EE" x="720" y="160" >
+			<callout x="720" y="128" pointer="SE" />
 		</entity>
-		<entity schema="relief" name="cobon_type" color="C1D8EE" x="1024" y="896" >
-			<callout x="1120" y="992" pointer="NV" on="prefix" />
-			<callout x="704" y="1008" pointer="NE" on="is_active" />
+		<entity schema="clinic" name="medicine_out" color="C1D8EE" x="48" y="432" >
+			<callout x="48" y="400" pointer="SV" />
 		</entity>
-		<entity schema="relief" name="material_in_cobon" color="C1D8EE" x="48" y="800" />
-		<entity schema="administration" name="organizaiton" color="FF0000" x="832" y="192" />
-		<entity schema="relief" name="extra_family_info" color="C1D8EE" x="928" y="576" />
-		<entity schema="basic" name="zone" color="008000" x="1952" y="416" />
-		<entity schema="basic" name="health_status" color="008000" x="1760" y="480" />
-		<entity schema="basic" name="chronic_desciption" color="008000" x="1920" y="608" >
-			<callout x="1920" y="720" pointer="NE" />
+		<entity schema="clinic" name="pharmacy_stock" color="C1D8EE" x="720" y="416" >
+			<callout x="720" y="384" pointer="SV" />
 		</entity>
-		<entity schema="relief" name="cobon" color="C1D8EE" x="528" y="848" >
-			<callout x="464" y="1056" pointer="NE" on="cobon_recieve_stamp" />
-			<callout x="320" y="960" pointer="SE" on="cobon_issue_stamp" />
+		<entity schema="clinic" name="medicine" color="C1D8EE" x="272" y="432" >
+			<callout x="272" y="400" pointer="SE" />
 		</entity>
-		<entity schema="basic" name="person" color="008000" x="1472" y="368" >
-			<callout x="1472" y="816" pointer="NE" />
+		<entity schema="clinic" name="shipment" color="C1D8EE" x="944" y="416" >
+			<callout x="944" y="384" pointer="SV" />
 		</entity>
-		<entity schema="administration" name="region" color="FF0000" x="816" y="400" />
+		<entity schema="clinic" name="disease" color="C1D8EE" x="720" y="672" />
+		<entity schema="basic" name="person" color="008000" x="1200" y="160" >
+			<callout x="1200" y="608" pointer="NE" />
+		</entity>
+		<entity schema="basic" name="chronic_desciption" color="008000" x="1680" y="688" >
+			<callout x="1680" y="800" pointer="NE" />
+		</entity>
+		<entity schema="basic" name="family" color="008000" x="1456" y="480" >
+			<callout x="1456" y="448" pointer="SV" />
+		</entity>
+		<entity schema="basic" name="displacement" color="008000" x="1456" y="160" >
+			<callout x="1552" y="304" pointer="NV" />
+		</entity>
+		<entity schema="relief" name="materials" color="C1D8EE" x="2160" y="944" >
+			<callout x="1856" y="848" pointer="SE" />
+		</entity>
+		<entity schema="relief" name="cobon" color="C1D8EE" x="1904" y="944" >
+			<callout x="1840" y="1152" pointer="NE" on="cobon_recieve_stamp" />
+			<callout x="1696" y="1056" pointer="SE" on="cobon_issue_stamp" />
+		</entity>
+		<entity schema="relief" name="cobon_type" color="C1D8EE" x="1904" y="1232" >
+			<callout x="2048" y="1392" pointer="NV" on="prefix" />
+			<callout x="1552" y="1376" pointer="NE" on="is_active" />
+		</entity>
+		<entity schema="administration" name="organizaiton" color="FF0000" x="1904" y="416" />
+		<entity schema="administration" name="region" color="FF0000" x="2128" y="416" />
+		<entity schema="administration" name="internationorganization" color="FF0000" x="2128" y="160" >
+			<callout x="2288" y="160" pointer="Round" />
+		</entity>
+		<entity schema="administration" name="subbranch" color="FF0000" x="1904" y="160" >
+			<callout x="1904" y="80" pointer="SV" />
+		</entity>
 		<group name="Administration" color="FF0000" >
 			<entity schema="administration" name="organizaiton" />
 			<entity schema="administration" name="subbranch" />
 			<entity schema="administration" name="internationorganization" />
 			<entity schema="administration" name="region" />
+		</group>
+		<group name="relief" color="C4E0F9" >
+			<entity schema="relief" name="extra_family_info" />
+			<entity schema="relief" name="cobon" />
+			<entity schema="relief" name="materials" />
+			<entity schema="relief" name="cobon_type" />
+			<entity schema="relief" name="material_in_cobon" />
 		</group>
 		<group name="Basic Information" color="008000" >
 			<entity schema="basic" name="chronic_desciption" />
@@ -394,12 +647,17 @@ material_type يعطي نوع المادة (غذائية، غير غذائية) 
 			<entity schema="basic" name="person" />
 			<entity schema="basic" name="zone" />
 		</group>
-		<group name="relief" color="C4E0F9" >
-			<entity schema="relief" name="extra_family_info" />
-			<entity schema="relief" name="cobon" />
-			<entity schema="relief" name="materials" />
-			<entity schema="relief" name="cobon_type" />
-			<entity schema="relief" name="material_in_cobon" />
+		<group name="Clinic" color="FFFF00" >
+			<entity schema="clinic" name="prescription" />
+			<entity schema="clinic" name="visit" />
+			<entity schema="clinic" name="doctor" />
+			<entity schema="clinic" name="clinics" />
+			<entity schema="clinic" name="medicine" />
+			<entity schema="clinic" name="medicine_out" />
+			<entity schema="clinic" name="pharmacy_stock" />
+			<entity schema="clinic" name="diagnosis" />
+			<entity schema="clinic" name="disease" />
+			<entity schema="clinic" name="shipment" />
 		</group>
 	</layout>
 </project>
