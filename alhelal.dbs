@@ -38,6 +38,13 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<fk_column name="parent_id" pk="id" />
 			</fk>
 		</table>
+		<table name="roles" >
+			<column name="id" type="serial" jt="4" mandatory="y" />
+			<column name="name" type="varchar" length="100" jt="12" mandatory="y" />
+			<index name="pk_roles_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
 		<table name="subbranch" >
 			<comment><![CDATA[توفير معلومات عن الأفرع التابعة لهذه المنظمة،
 في حال كانت المنظمة لا تمتلك أفرع،
@@ -53,11 +60,44 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<column name="id" />
 				<column name="organization_id" />
 			</index>
+			<index name="unq_subbranch_organization_id" unique="UNIQUE" >
+				<column name="organization_id" />
+				<column name="id" />
+			</index>
 			<fk name="fk_subbranch_organizaiton" to_schema="administration" to_table="organizaiton" delete_action="restrict" update_action="cascade" >
 				<fk_column name="organization_id" pk="id" />
 			</fk>
 			<fk name="fk_subbranch_subbranch" to_schema="administration" to_table="subbranch" delete_action="setNull" update_action="cascade" >
 				<fk_column name="parent_id" pk="id" />
+			</fk>
+		</table>
+		<table name="user_roles" >
+			<column name="user_id" type="integer" jt="4" mandatory="y" />
+			<column name="role_id" type="integer" jt="4" mandatory="y" />
+			<fk name="fk_user_roles_roles" to_schema="administration" to_table="roles" >
+				<fk_column name="role_id" pk="id" />
+			</fk>
+			<fk name="fk_user_roles_users" to_schema="administration" to_table="users" >
+				<fk_column name="user_id" pk="id" />
+			</fk>
+		</table>
+		<table name="users" >
+			<column name="id" type="serial" jt="4" mandatory="y" />
+			<column name="username" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="organization_id" type="integer" jt="4" />
+			<column name="subbranch_id" type="integer" jt="4" />
+			<column name="secret" type="varchar" length="255" jt="12" mandatory="y" />
+			<index name="pk_users_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="idx_users" unique="UNIQUE" >
+				<column name="username" />
+				<column name="organization_id" />
+				<column name="subbranch_id" />
+			</index>
+			<fk name="fk_users_subbranch" to_schema="administration" to_table="subbranch" >
+				<fk_column name="organization_id" pk="organization_id" />
+				<fk_column name="subbranch_id" pk="id" />
 			</fk>
 		</table>
 	</schema>
@@ -481,6 +521,13 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			<column name="total_family_income" type="double precision" decimal="0" jt="3" />
 			<column name="residence_type" type="integer" decimal="0" jt="4" />
 			<column name="residence_status" type="integer" decimal="0" jt="4" />
+			<column name="iscanceled" type="bool" jt="-7" mandatory="y" >
+				<defo>false</defo>
+			</column>
+			<column name="dateofcacenlation" type="date" jt="91" />
+			<column name="dateofregister" type="date" jt="91" >
+				<defo>current_date</defo>
+			</column>
 			<index name="pk_extra_family_info_family_id" unique="PRIMARY_KEY" >
 				<column name="family_id" />
 			</index>
@@ -563,75 +610,72 @@ material_type يعطي نوع المادة (غذائية، غير غذائية) 
 	</schema>
 	<connector name="MariaDb" database="MariaDb" driver_class="org.mariadb.jdbc.Driver" driver_jar="mariadb-java-client-2.4.2.jar" driver_desc="Standard" host="localhost" port="3306" instance="daHelp" user="root" passwd="cm9vdA==" />
 	<layout name="Default Layout" id="Layout_deb3f5" show_relation="columns" >
-		<entity schema="relief" name="material_in_cobon" color="C1D8EE" x="2448" y="944" />
-		<entity schema="relief" name="extra_family_info" color="C1D8EE" x="2160" y="1232" />
-		<entity schema="basic" name="zone" color="008000" x="1200" y="688" />
-		<entity schema="basic" name="health_status" color="008000" x="1456" y="688" />
-		<entity schema="clinic" name="visit" color="C1D8EE" x="496" y="160" >
-			<callout x="496" y="128" pointer="SV" />
+		<entity schema="relief" name="material_in_cobon" color="C1D8EE" x="3440" y="176" />
+		<entity schema="basic" name="zone" color="008000" x="2192" y="704" />
+		<entity schema="basic" name="health_status" color="008000" x="2448" y="704" />
+		<entity schema="clinic" name="visit" color="C1D8EE" x="496" y="176" >
+			<callout x="496" y="144" pointer="SV" />
 		</entity>
-		<entity schema="clinic" name="diagnosis" color="C1D8EE" x="496" y="416" >
-			<callout x="496" y="384" pointer="SV" />
+		<entity schema="clinic" name="diagnosis" color="C1D8EE" x="496" y="432" >
+			<callout x="496" y="400" pointer="SV" />
 		</entity>
-		<entity schema="clinic" name="prescription" color="C1D8EE" x="272" y="160" >
-			<callout x="208" y="112" pointer="SV" />
+		<entity schema="clinic" name="prescription" color="C1D8EE" x="272" y="176" >
+			<callout x="208" y="128" pointer="SV" />
 		</entity>
-		<entity schema="clinic" name="clinics" color="C1D8EE" x="912" y="160" >
-			<callout x="912" y="128" pointer="SV" />
+		<entity schema="clinic" name="clinics" color="C1D8EE" x="912" y="176" >
+			<callout x="912" y="144" pointer="SV" />
 		</entity>
-		<entity schema="clinic" name="doctor" color="C1D8EE" x="720" y="160" >
-			<callout x="720" y="128" pointer="SE" />
+		<entity schema="clinic" name="doctor" color="C1D8EE" x="720" y="176" >
+			<callout x="720" y="144" pointer="SE" />
 		</entity>
-		<entity schema="clinic" name="medicine_out" color="C1D8EE" x="48" y="432" >
-			<callout x="48" y="400" pointer="SV" />
+		<entity schema="clinic" name="medicine_out" color="C1D8EE" x="48" y="448" >
+			<callout x="48" y="416" pointer="SV" />
 		</entity>
-		<entity schema="clinic" name="pharmacy_stock" color="C1D8EE" x="720" y="416" >
-			<callout x="720" y="384" pointer="SV" />
+		<entity schema="clinic" name="pharmacy_stock" color="C1D8EE" x="720" y="432" >
+			<callout x="720" y="400" pointer="SV" />
 		</entity>
-		<entity schema="clinic" name="medicine" color="C1D8EE" x="272" y="432" >
-			<callout x="272" y="400" pointer="SE" />
+		<entity schema="clinic" name="medicine" color="C1D8EE" x="272" y="448" >
+			<callout x="272" y="416" pointer="SE" />
 		</entity>
-		<entity schema="clinic" name="shipment" color="C1D8EE" x="944" y="416" >
-			<callout x="944" y="384" pointer="SV" />
+		<entity schema="clinic" name="shipment" color="C1D8EE" x="944" y="432" >
+			<callout x="944" y="400" pointer="SV" />
 		</entity>
-		<entity schema="clinic" name="disease" color="C1D8EE" x="720" y="672" />
-		<entity schema="basic" name="person" color="008000" x="1200" y="160" >
-			<callout x="1200" y="608" pointer="NE" />
+		<entity schema="clinic" name="disease" color="C1D8EE" x="720" y="688" />
+		<entity schema="basic" name="person" color="008000" x="2192" y="176" >
+			<callout x="2192" y="624" pointer="NE" />
 		</entity>
-		<entity schema="basic" name="chronic_desciption" color="008000" x="1680" y="688" >
-			<callout x="1680" y="800" pointer="NE" />
+		<entity schema="basic" name="chronic_desciption" color="008000" x="2672" y="704" >
+			<callout x="2672" y="816" pointer="NE" />
 		</entity>
-		<entity schema="basic" name="family" color="008000" x="1456" y="480" >
-			<callout x="1456" y="448" pointer="SV" />
+		<entity schema="basic" name="displacement" color="008000" x="2448" y="176" >
+			<callout x="2544" y="320" pointer="NV" />
 		</entity>
-		<entity schema="basic" name="displacement" color="008000" x="1456" y="160" >
-			<callout x="1552" y="304" pointer="NV" />
+		<entity schema="relief" name="materials" color="C1D8EE" x="3152" y="176" >
+			<callout x="2848" y="80" pointer="SE" />
 		</entity>
-		<entity schema="relief" name="materials" color="C1D8EE" x="2160" y="944" >
-			<callout x="1856" y="848" pointer="SE" />
+		<entity schema="relief" name="cobon" color="C1D8EE" x="2896" y="176" >
+			<callout x="2832" y="384" pointer="NE" on="cobon_recieve_stamp" />
+			<callout x="2688" y="288" pointer="SE" on="cobon_issue_stamp" />
 		</entity>
-		<entity schema="relief" name="cobon" color="C1D8EE" x="1904" y="944" >
-			<callout x="1840" y="1152" pointer="NE" on="cobon_recieve_stamp" />
-			<callout x="1696" y="1056" pointer="SE" on="cobon_issue_stamp" />
+		<entity schema="relief" name="cobon_type" color="C1D8EE" x="2896" y="464" >
+			<callout x="3040" y="624" pointer="NV" on="prefix" />
+			<callout x="2544" y="608" pointer="NE" on="is_active" />
 		</entity>
-		<entity schema="relief" name="cobon_type" color="C1D8EE" x="1904" y="1232" >
-			<callout x="2048" y="1392" pointer="NV" on="prefix" />
-			<callout x="1552" y="1376" pointer="NE" on="is_active" />
+		<entity schema="administration" name="organizaiton" color="FF0000" x="1200" y="208" />
+		<entity schema="administration" name="region" color="FF0000" x="1616" y="176" />
+		<entity schema="basic" name="family" color="008000" x="2448" y="496" >
+			<callout x="2448" y="464" pointer="SV" />
 		</entity>
-		<entity schema="administration" name="organizaiton" color="FF0000" x="1904" y="416" />
-		<entity schema="administration" name="region" color="FF0000" x="2128" y="416" />
-		<entity schema="administration" name="internationorganization" color="FF0000" x="2128" y="160" >
-			<callout x="2288" y="160" pointer="Round" />
+		<entity schema="relief" name="extra_family_info" color="C1D8EE" x="3152" y="464" />
+		<entity schema="administration" name="subbranch" color="FF0000" x="1392" y="176" >
+			<callout x="1392" y="96" pointer="SV" />
 		</entity>
-		<entity schema="administration" name="subbranch" color="FF0000" x="1904" y="160" >
-			<callout x="1904" y="80" pointer="SV" />
+		<entity schema="administration" name="users" color="FF0000" x="1616" y="432" />
+		<entity schema="administration" name="user_roles" color="FF0000" x="1840" y="432" />
+		<entity schema="administration" name="roles" color="FF0000" x="2016" y="432" />
+		<entity schema="administration" name="internationorganization" color="FF0000" x="1280" y="432" >
+			<callout x="1216" y="528" pointer="Round" />
 		</entity>
-		<group name="Administration" color="FF0000" >
-			<entity schema="administration" name="organizaiton" />
-			<entity schema="administration" name="subbranch" />
-			<entity schema="administration" name="internationorganization" />
-			<entity schema="administration" name="region" />
-		</group>
 		<group name="relief" color="C4E0F9" >
 			<entity schema="relief" name="extra_family_info" />
 			<entity schema="relief" name="cobon" />
@@ -646,6 +690,15 @@ material_type يعطي نوع المادة (غذائية، غير غذائية) 
 			<entity schema="basic" name="health_status" />
 			<entity schema="basic" name="person" />
 			<entity schema="basic" name="zone" />
+		</group>
+		<group name="Administration" color="FF0000" >
+			<entity schema="administration" name="organizaiton" />
+			<entity schema="administration" name="subbranch" />
+			<entity schema="administration" name="internationorganization" />
+			<entity schema="administration" name="region" />
+			<entity schema="administration" name="users" />
+			<entity schema="administration" name="user_roles" />
+			<entity schema="administration" name="roles" />
 		</group>
 		<group name="Clinic" color="FFFF00" >
 			<entity schema="clinic" name="prescription" />
