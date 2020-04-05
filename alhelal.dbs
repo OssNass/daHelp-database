@@ -259,25 +259,18 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			<column name="examination_id" type="serial" jt="4" mandatory="y" />
 			<column name="disease_id" type="integer" decimal="0" jt="4" mandatory="y" />
 			<column name="notes" type="varchar" length="600" decimal="0" jt="12" />
-			<column name="personid" type="integer" decimal="0" jt="4" mandatory="y" />
-			<column name="organization_id" type="integer" decimal="0" jt="4" mandatory="y" />
-			<column name="subbranch_id" type="integer" decimal="0" jt="4" mandatory="y" />
-			<column name="visit_date" type="date" length="0" decimal="0" jt="91" mandatory="y" />
+			<column name="visit_id" type="integer" decimal="0" jt="4" mandatory="y" />
 			<index name="idx_diagnosis" unique="PRIMARY_KEY" >
 				<column name="examination_id" />
 				<column name="disease_id" />
+				<column name="visit_id" />
 			</index>
 			<fk name="fk_diagnosis_disease" to_schema="clinic" to_table="disease" >
 				<fk_column name="disease_id" pk="disease_id" />
 			</fk>
-			<fk name="fk_diagnosis_examintation" to_schema="clinic" to_table="examintation" >
+			<fk name="fk_diagnosis_examintation" to_schema="clinic" to_table="examination" >
 				<fk_column name="examination_id" pk="examination_id" />
-			</fk>
-			<fk name="fk_diagnosis_visit" to_schema="clinic" to_table="visit" delete_action="restrict" update_action="cascade" >
-				<fk_column name="personid" pk="person_id" />
-				<fk_column name="organization_id" pk="organization_id" />
-				<fk_column name="subbranch_id" pk="subbranch_id" />
-				<fk_column name="visit_date" pk="visit_date" />
+				<fk_column name="visit_id" pk="visit_id" />
 			</fk>
 		</table>
 		<table name="disease" >
@@ -303,8 +296,31 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<column name="clinic_id" />
 				<column name="doctor_id" />
 			</index>
+			<index name="unq_doctor_doctor_id" unique="UNIQUE" >
+				<column name="doctor_id" />
+			</index>
 			<fk name="fk_doctor_clinics" to_schema="clinic" to_table="clinics" >
 				<fk_column name="clinic_id" pk="clinic_id" />
+			</fk>
+		</table>
+		<table name="examination" >
+			<comment><![CDATA[معاينة]]></comment>
+			<column name="examination_id" type="integer" jt="4" mandatory="y" />
+			<column name="visit_id" type="integer" jt="4" mandatory="y" />
+			<column name="doctor_id" type="integer" jt="4" mandatory="y" />
+			<column name="clinic_id" type="integer" jt="4" />
+			<index name="pk_examination_examination_id" unique="PRIMARY_KEY" >
+				<column name="examination_id" />
+			</index>
+			<index name="unq_examination_examination_id" unique="UNIQUE" >
+				<column name="examination_id" />
+				<column name="visit_id" />
+			</index>
+			<fk name="fk_examination_visit_id" to_schema="clinic" to_table="visit" >
+				<fk_column name="visit_id" pk="visit_id" />
+			</fk>
+			<fk name="fk_examination_doctor" to_schema="clinic" to_table="doctor" >
+				<fk_column name="doctor_id" pk="doctor_id" />
 			</fk>
 		</table>
 		<table name="examintation" >
@@ -344,33 +360,33 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			<column name="medicine_id" type="integer" decimal="0" jt="4" mandatory="y" />
 			<column name="shipment_id" type="integer" decimal="0" jt="4" mandatory="y" />
 			<column name="quantity" type="integer" decimal="0" jt="4" />
-			<column name="prescription_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="movement_id" type="integer" jt="4" mandatory="y" />
 			<index name="idx_medicine_out" unique="PRIMARY_KEY" >
 				<column name="medicine_id" />
 				<column name="shipment_id" />
-				<column name="prescription_id" />
+				<column name="movement_id" />
 			</index>
-			<fk name="fk_medicine_out_prescription" to_schema="clinic" to_table="prescription" >
-				<fk_column name="prescription_id" pk="prescription_id" />
-			</fk>
 			<fk name="fk_medicine_out_pharmacy_stock" to_schema="clinic" to_table="pharmacy_stock" >
 				<fk_column name="medicine_id" pk="medicine_id" />
 				<fk_column name="shipment_id" pk="shipment_id" />
 			</fk>
+			<fk name="fk_medicine_out" to_schema="clinic" to_table="pharmacy_movement_out" >
+				<fk_column name="movement_id" pk="movement_id" />
+			</fk>
 		</table>
 		<table name="pharmacy_movement_out" >
 			<comment><![CDATA[movement_type: إعادة، إتلاف، صرف وصفة]]></comment>
-			<column name="movement_id" type="integer" decimal="0" jt="4" mandatory="y" />
-			<column name="movemnet_type" type="integer" decimal="0" jt="4" mandatory="y" >
-				<comment><![CDATA[movement_type: إعادة، إتلاف، صرف وصفة]]></comment>
-			</column>
-			<column name="movement_date" type="date" length="0" decimal="0" jt="91" mandatory="y" />
-			<column name="notes" type="varchar" length="600" decimal="0" jt="12" />
-			<column name="prescrition_id" type="integer" decimal="0" jt="4" />
-			<index name="pk_medicine_movement_out_movement_id" unique="PRIMARY_KEY" >
+			<column name="movement_id" type="serial" jt="4" mandatory="y" />
+			<column name="movemnet_type" type="integer" jt="4" mandatory="y" />
+			<column name="movement_date" type="date" jt="91" />
+			<column name="notes" type="varchar" length="100" jt="12" />
+			<column name="prescrition_id" type="integer" jt="4" />
+			<index name="pk_pharmacy_movement_out_movement_id" unique="PRIMARY_KEY" >
 				<column name="movement_id" />
 			</index>
-			<fk name="fk_pharmacy_movement_out" to_schema="clinic" to_table="prescription" />
+			<fk name="fk_pharmacy_movement_out" to_schema="clinic" to_table="prescription" >
+				<fk_column name="prescrition_id" pk="prescription_id" />
+			</fk>
 		</table>
 		<table name="pharmacy_stock" >
 			<comment><![CDATA[مخزن الصيدلية]]></comment>
@@ -384,10 +400,6 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<column name="shipment_id" />
 				<column name="medicine_id" />
 			</index>
-			<index name="unq_pharmacy_stock_medicine_id" unique="UNIQUE" >
-				<column name="medicine_id" />
-				<column name="shipment_id" />
-			</index>
 			<fk name="fk_shipment_item_shipment" to_schema="clinic" to_table="shipment" >
 				<fk_column name="shipment_id" pk="shipment_id" />
 			</fk>
@@ -395,28 +407,39 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<fk_column name="medicine_id" pk="medicine_id" />
 			</fk>
 		</table>
+		<table name="prescribed_medications" >
+			<comment><![CDATA[أدوية الوصفة]]></comment>
+			<column name="prescrition_id" type="integer" jt="4" mandatory="y" />
+			<column name="medicine_id" type="integer" jt="4" mandatory="y" />
+			<column name="dose" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="quantity" type="integer" jt="4" mandatory="y" />
+			<index name="idx_prescribed_medications" unique="PRIMARY_KEY" >
+				<column name="prescrition_id" />
+				<column name="medicine_id" />
+			</index>
+			<fk name="fk_prescribed_medications" to_schema="clinic" to_table="medicine" >
+				<fk_column name="medicine_id" pk="medicine_id" />
+			</fk>
+			<fk name="fk_prescribed_medications_prescrtion" to_schema="clinic" to_table="prescription" >
+				<fk_column name="prescrition_id" pk="prescription_id" />
+			</fk>
+		</table>
 		<table name="prescription" >
 			<comment><![CDATA[الوصفة(  يوضع بالجدول ادوية الوصفة )]]></comment>
 			<column name="prescription_id" type="serial" jt="4" mandatory="y" autoincrement="y" />
-			<column name="medicine_code" type="varchar" length="20" decimal="0" jt="12" mandatory="y" />
-			<column name="dose" type="varchar" length="100" decimal="0" jt="12" />
-			<column name="quantity" type="integer" decimal="0" jt="4" mandatory="y" />
-			<column name="person_id" type="integer" decimal="0" jt="4" mandatory="y" />
-			<column name="organization_id" type="integer" decimal="0" jt="4" mandatory="y" />
-			<column name="subbranch_id" type="integer" decimal="0" jt="4" mandatory="y" />
-			<column name="visit_date" type="date" length="0" decimal="0" jt="91" mandatory="y" />
-			<index name="pk_prescription_prescription_id" unique="PRIMARY_KEY" >
+			<column name="examination_id" type="integer" jt="4" mandatory="y" />
+			<column name="free" type="bool" jt="-7" />
+			<column name="presreciptio_date" type="date" jt="91" mandatory="y" >
+				<defo>current_date</defo>
+			</column>
+			<index name="idx_prescription" unique="PRIMARY_KEY" >
 				<column name="prescription_id" />
 			</index>
-			<fk name="fk_prescription_examintation" to_schema="clinic" to_table="examintation" />
-			<fk name="fk_prescription_medicine" to_schema="clinic" to_table="medicine" >
-				<fk_column name="medicine_code" pk="code" />
-			</fk>
-			<fk name="fk_prescription_visit" to_schema="clinic" to_table="visit" >
-				<fk_column name="person_id" pk="person_id" />
-				<fk_column name="organization_id" pk="organization_id" />
-				<fk_column name="subbranch_id" pk="subbranch_id" />
-				<fk_column name="visit_date" pk="visit_date" />
+			<index name="unq_prescription_prescription_id" unique="UNIQUE" >
+				<column name="prescription_id" />
+			</index>
+			<fk name="fk_prescription_examination" to_schema="clinic" to_table="examination" >
+				<fk_column name="examination_id" pk="examination_id" />
 			</fk>
 		</table>
 		<table name="shipment" >
@@ -441,23 +464,16 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<defo>0</defo>
 				<comment><![CDATA[الرسوم]]></comment>
 			</column>
-			<column name="doctor_id" type="integer" decimal="0" jt="4" mandatory="y" />
-			<column name="clinic_id" type="integer" decimal="0" jt="4" mandatory="y" />
+			<column name="visit_id" type="serial" jt="4" mandatory="y" />
 			<index name="pk_visit_visit_id" unique="PRIMARY_KEY" >
+				<column name="visit_id" />
+			</index>
+			<index name="idx_visit" unique="UNIQUE" >
 				<column name="person_id" />
 				<column name="organization_id" />
 				<column name="subbranch_id" />
 				<column name="visit_date" />
 			</index>
-			<fk name="fk_visit_doctor" to_schema="clinic" to_table="doctor" delete_action="restrict" update_action="cascade" >
-				<fk_column name="clinic_id" pk="clinic_id" />
-				<fk_column name="doctor_id" pk="doctor_id" />
-			</fk>
-			<fk name="fk_visit_person" to_schema="basic" to_table="person" delete_action="restrict" update_action="cascade" >
-				<fk_column name="person_id" pk="person_id" />
-				<fk_column name="organization_id" pk="organization_id" />
-				<fk_column name="subbranch_id" pk="subbranch_id" />
-			</fk>
 		</table>
 	</schema>
 	<schema name="relief" schemaname="relief" >
@@ -611,72 +627,75 @@ material_type يعطي نوع المادة (غذائية، غير غذائية) 
 	</schema>
 	<connector name="MariaDb" database="MariaDb" driver_class="org.mariadb.jdbc.Driver" driver_jar="mariadb-java-client-2.4.2.jar" driver_desc="Standard" host="localhost" port="3306" instance="daHelp" user="root" passwd="cm9vdA==" />
 	<layout name="Default Layout" id="Layout_deb3f5" show_relation="columns" >
-		<entity schema="relief" name="material_in_cobon" color="C1D8EE" x="3440" y="208" />
-		<entity schema="basic" name="zone" color="008000" x="2192" y="736" />
-		<entity schema="basic" name="health_status" color="008000" x="2448" y="736" />
-		<entity schema="clinic" name="visit" color="C1D8EE" x="496" y="208" >
-			<callout x="496" y="176" pointer="SV" />
+		<entity schema="relief" name="material_in_cobon" color="C1D8EE" x="3648" y="320" />
+		<entity schema="basic" name="zone" color="008000" x="2400" y="848" />
+		<entity schema="basic" name="health_status" color="008000" x="2656" y="848" />
+		<entity schema="clinic" name="shipment" color="C1D8EE" x="1088" y="656" >
+			<callout x="1088" y="624" pointer="SV" />
 		</entity>
-		<entity schema="clinic" name="diagnosis" color="C1D8EE" x="496" y="464" >
-			<callout x="496" y="432" pointer="SV" />
+		<entity schema="basic" name="person" color="008000" x="2400" y="320" >
+			<callout x="2400" y="768" pointer="NE" />
 		</entity>
-		<entity schema="clinic" name="prescription" color="C1D8EE" x="272" y="208" >
-			<callout x="208" y="160" pointer="SV" />
+		<entity schema="basic" name="chronic_desciption" color="008000" x="2880" y="848" >
+			<callout x="2880" y="960" pointer="NE" />
 		</entity>
-		<entity schema="clinic" name="clinics" color="C1D8EE" x="912" y="208" >
-			<callout x="912" y="176" pointer="SV" />
+		<entity schema="basic" name="displacement" color="008000" x="2656" y="320" >
+			<callout x="2752" y="464" pointer="NV" />
 		</entity>
-		<entity schema="clinic" name="doctor" color="C1D8EE" x="720" y="208" >
-			<callout x="720" y="176" pointer="SE" />
+		<entity schema="relief" name="materials" color="C1D8EE" x="3360" y="320" >
+			<callout x="3136" y="192" pointer="SE" />
 		</entity>
-		<entity schema="clinic" name="medicine_out" color="C1D8EE" x="48" y="480" >
-			<callout x="48" y="448" pointer="SV" />
+		<entity schema="relief" name="cobon" color="C1D8EE" x="3104" y="320" >
+			<callout x="3040" y="528" pointer="NE" on="cobon_recieve_stamp" />
+			<callout x="2896" y="432" pointer="SE" on="cobon_issue_stamp" />
 		</entity>
-		<entity schema="clinic" name="pharmacy_stock" color="C1D8EE" x="720" y="464" >
-			<callout x="720" y="432" pointer="SV" />
+		<entity schema="relief" name="cobon_type" color="C1D8EE" x="3104" y="608" >
+			<callout x="2752" y="752" pointer="NE" on="is_active" />
+			<callout x="3168" y="752" pointer="NV" on="prefix" />
 		</entity>
-		<entity schema="clinic" name="medicine" color="C1D8EE" x="272" y="480" >
-			<callout x="272" y="448" pointer="SE" />
+		<entity schema="administration" name="organizaiton" color="FF0000" x="1408" y="352" />
+		<entity schema="administration" name="region" color="FF0000" x="1824" y="320" />
+		<entity schema="basic" name="family" color="008000" x="2656" y="640" >
+			<callout x="2656" y="608" pointer="SV" />
 		</entity>
-		<entity schema="clinic" name="shipment" color="C1D8EE" x="944" y="464" >
-			<callout x="944" y="432" pointer="SV" />
+		<entity schema="administration" name="subbranch" color="FF0000" x="1600" y="320" >
+			<callout x="1600" y="240" pointer="SV" />
 		</entity>
-		<entity schema="clinic" name="disease" color="C1D8EE" x="720" y="720" />
-		<entity schema="basic" name="person" color="008000" x="2192" y="208" >
-			<callout x="2192" y="656" pointer="NE" />
+		<entity schema="administration" name="users" color="FF0000" x="1824" y="576" />
+		<entity schema="administration" name="user_roles" color="FF0000" x="2048" y="576" />
+		<entity schema="administration" name="roles" color="FF0000" x="2224" y="576" />
+		<entity schema="administration" name="internationorganization" color="FF0000" x="1488" y="576" >
+			<callout x="1424" y="672" pointer="Round" />
 		</entity>
-		<entity schema="basic" name="chronic_desciption" color="008000" x="2672" y="736" >
-			<callout x="2672" y="848" pointer="NE" />
+		<entity schema="relief" name="extra_family_info" color="C1D8EE" x="3376" y="560" />
+		<entity schema="clinic" name="disease" color="C1D8EE" x="80" y="176" />
+		<entity schema="clinic" name="medicine" color="C1D8EE" x="80" y="768" >
+			<callout x="80" y="736" pointer="SE" />
 		</entity>
-		<entity schema="basic" name="displacement" color="008000" x="2448" y="208" >
-			<callout x="2544" y="352" pointer="NV" />
+		<entity schema="clinic" name="prescribed_medications" color="C1D8EE" x="80" y="576" />
+		<entity schema="clinic" name="doctor" color="C1D8EE" x="928" y="400" >
+			<callout x="928" y="368" pointer="SE" />
 		</entity>
-		<entity schema="relief" name="materials" color="C1D8EE" x="3152" y="208" >
-			<callout x="2928" y="80" pointer="SE" />
+		<entity schema="clinic" name="clinics" color="C1D8EE" x="1104" y="416" >
+			<callout x="1104" y="384" pointer="SV" />
 		</entity>
-		<entity schema="relief" name="cobon" color="C1D8EE" x="2896" y="208" >
-			<callout x="2832" y="416" pointer="NE" on="cobon_recieve_stamp" />
-			<callout x="2688" y="320" pointer="SE" on="cobon_issue_stamp" />
+		<entity schema="clinic" name="visit" color="C1D8EE" x="736" y="112" >
+			<callout x="736" y="80" pointer="SV" />
 		</entity>
-		<entity schema="relief" name="cobon_type" color="C1D8EE" x="2896" y="496" >
-			<callout x="2544" y="640" pointer="NE" on="is_active" />
-			<callout x="2960" y="640" pointer="NV" on="prefix" />
+		<entity schema="clinic" name="pharmacy_movement_out" color="C1D8EE" x="288" y="544" />
+		<entity schema="clinic" name="medicine_out" color="C1D8EE" x="544" y="560" >
+			<callout x="544" y="528" pointer="SV" />
 		</entity>
-		<entity schema="administration" name="organizaiton" color="FF0000" x="1200" y="240" />
-		<entity schema="administration" name="region" color="FF0000" x="1616" y="208" />
-		<entity schema="basic" name="family" color="008000" x="2448" y="528" >
-			<callout x="2448" y="496" pointer="SV" />
+		<entity schema="clinic" name="pharmacy_stock" color="C1D8EE" x="832" y="624" >
+			<callout x="832" y="592" pointer="SV" />
 		</entity>
-		<entity schema="administration" name="subbranch" color="FF0000" x="1392" y="208" >
-			<callout x="1392" y="128" pointer="SV" />
+		<entity schema="clinic" name="prescription" color="C1D8EE" x="80" y="368" >
+			<callout x="48" y="320" pointer="SV" />
 		</entity>
-		<entity schema="administration" name="users" color="FF0000" x="1616" y="464" />
-		<entity schema="administration" name="user_roles" color="FF0000" x="1840" y="464" />
-		<entity schema="administration" name="roles" color="FF0000" x="2016" y="464" />
-		<entity schema="administration" name="internationorganization" color="FF0000" x="1280" y="464" >
-			<callout x="1216" y="560" pointer="Round" />
+		<entity schema="clinic" name="diagnosis" color="C1D8EE" x="416" y="176" >
+			<callout x="416" y="144" pointer="SV" />
 		</entity>
-		<entity schema="relief" name="extra_family_info" color="C1D8EE" x="3168" y="448" />
+		<entity schema="clinic" name="examination" color="C1D8EE" x="688" y="352" />
 		<group name="relief" color="C4E0F9" >
 			<entity schema="relief" name="extra_family_info" />
 			<entity schema="relief" name="cobon" />
@@ -712,6 +731,8 @@ material_type يعطي نوع المادة (غذائية، غير غذائية) 
 			<entity schema="clinic" name="diagnosis" />
 			<entity schema="clinic" name="disease" />
 			<entity schema="clinic" name="shipment" />
+			<entity schema="clinic" name="examination" />
+			<entity schema="clinic" name="pharmacy_movement_out" />
 		</group>
 	</layout>
 </project>
