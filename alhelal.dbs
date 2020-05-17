@@ -146,7 +146,7 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			<index name="pk_family_id" unique="PRIMARY_KEY" >
 				<column name="family_id" />
 			</index>
-			<fk name="fk_family_extra_family_info" to_schema="relief" to_table="extra_family_info" >
+			<fk name="fk_family_extra_family_info" to_schema="relief" to_table="extra_family_info" delete_action="restrict" update_action="cascade" >
 				<fk_column name="family_id" pk="family_id" />
 			</fk>
 		</table>
@@ -214,7 +214,7 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<column name="organization_id" />
 				<column name="subbranch_id" />
 			</index>
-			<fk name="f_id" to_schema="basic" to_table="family" >
+			<fk name="f_id" to_schema="basic" to_table="family" delete_action="restrict" update_action="cascade" >
 				<fk_column name="family_id" pk="family_id" />
 			</fk>
 			<fk name="fk_person_region" to_schema="administration" to_table="region" delete_action="restrict" update_action="cascade" >
@@ -238,7 +238,7 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<column name="organization_id" />
 				<column name="subbranch_id" />
 			</index>
-			<fk name="fk_zone_person" to_schema="basic" to_table="person" >
+			<fk name="fk_zone_person" to_schema="basic" to_table="person" delete_action="restrict" update_action="cascade" >
 				<fk_column name="person_id" pk="person_id" />
 				<fk_column name="organization_id" pk="organization_id" />
 				<fk_column name="subbranch_id" pk="subbranch_id" />
@@ -265,10 +265,10 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<column name="disease_id" />
 				<column name="visit_id" />
 			</index>
-			<fk name="fk_diagnosis_disease" to_schema="clinic" to_table="disease" >
+			<fk name="fk_diagnosis_disease" to_schema="clinic" to_table="disease" delete_action="cascade" update_action="cascade" >
 				<fk_column name="disease_id" pk="disease_id" />
 			</fk>
-			<fk name="fk_diagnosis_examintation" to_schema="clinic" to_table="examination" >
+			<fk name="fk_diagnosis_examintation" to_schema="clinic" to_table="examination" delete_action="cascade" update_action="restrict" >
 				<fk_column name="examination_id" pk="examination_id" />
 				<fk_column name="visit_id" pk="visit_id" />
 			</fk>
@@ -299,7 +299,7 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			<index name="unq_doctor_doctor_id" unique="UNIQUE" >
 				<column name="doctor_id" />
 			</index>
-			<fk name="fk_doctor_clinics" to_schema="clinic" to_table="clinics" >
+			<fk name="fk_doctor_clinics" to_schema="clinic" to_table="clinics" delete_action="restrict" update_action="cascade" >
 				<fk_column name="clinic_id" pk="clinic_id" />
 			</fk>
 		</table>
@@ -316,10 +316,10 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<column name="examination_id" />
 				<column name="visit_id" />
 			</index>
-			<fk name="fk_examination_visit_id" to_schema="clinic" to_table="visit" >
+			<fk name="fk_examination_visit_id" to_schema="clinic" to_table="visit" delete_action="restrict" update_action="cascade" >
 				<fk_column name="visit_id" pk="visit_id" />
 			</fk>
-			<fk name="fk_examination_doctor" to_schema="clinic" to_table="doctor" >
+			<fk name="fk_examination_doctor" to_schema="clinic" to_table="doctor" delete_action="restrict" update_action="cascade" >
 				<fk_column name="doctor_id" pk="doctor_id" />
 			</fk>
 		</table>
@@ -366,11 +366,11 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<column name="shipment_id" />
 				<column name="movement_id" />
 			</index>
-			<fk name="fk_medicine_out_pharmacy_stock" to_schema="clinic" to_table="pharmacy_stock" >
+			<fk name="fk_medicine_out_pharmacy_stock" to_schema="clinic" to_table="pharmacy_stock" delete_action="restrict" update_action="cascade" >
 				<fk_column name="medicine_id" pk="medicine_id" />
 				<fk_column name="shipment_id" pk="shipment_id" />
 			</fk>
-			<fk name="fk_medicine_out" to_schema="clinic" to_table="pharmacy_movement_out" >
+			<fk name="fk_medicine_out" to_schema="clinic" to_table="pharmacy_movement_out" delete_action="restrict" update_action="cascade" >
 				<fk_column name="movement_id" pk="movement_id" />
 			</fk>
 		</table>
@@ -400,10 +400,14 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<column name="shipment_id" />
 				<column name="medicine_id" />
 			</index>
-			<fk name="fk_shipment_item_shipment" to_schema="clinic" to_table="shipment" >
+			<index name="unq_pharmacy_stock_medicine_id" unique="UNIQUE" >
+				<column name="medicine_id" />
+				<column name="shipment_id" />
+			</index>
+			<fk name="fk_shipment_item_shipment" to_schema="clinic" to_table="shipment" delete_action="restrict" update_action="cascade" >
 				<fk_column name="shipment_id" pk="shipment_id" />
 			</fk>
-			<fk name="fk_shipment_item_medicine" to_schema="clinic" to_table="medicine" >
+			<fk name="fk_shipment_item_medicine" to_schema="clinic" to_table="medicine" delete_action="restrict" update_action="cascade" >
 				<fk_column name="medicine_id" pk="medicine_id" />
 			</fk>
 		</table>
@@ -417,10 +421,10 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<column name="prescrition_id" />
 				<column name="medicine_id" />
 			</index>
-			<fk name="fk_prescribed_medications" to_schema="clinic" to_table="medicine" >
+			<fk name="fk_prescribed_medications" to_schema="clinic" to_table="medicine" delete_action="restrict" update_action="cascade" >
 				<fk_column name="medicine_id" pk="medicine_id" />
 			</fk>
-			<fk name="fk_prescribed_medications_prescrtion" to_schema="clinic" to_table="prescription" >
+			<fk name="fk_prescribed_medications_prescrtion" to_schema="clinic" to_table="prescription" delete_action="restrict" update_action="cascade" >
 				<fk_column name="prescrition_id" pk="prescription_id" />
 			</fk>
 		</table>
@@ -438,7 +442,7 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			<index name="unq_prescription_prescription_id" unique="UNIQUE" >
 				<column name="prescription_id" />
 			</index>
-			<fk name="fk_prescription_examination" to_schema="clinic" to_table="examination" >
+			<fk name="fk_prescription_examination" to_schema="clinic" to_table="examination" delete_action="restrict" update_action="cascade" >
 				<fk_column name="examination_id" pk="examination_id" />
 			</fk>
 		</table>
@@ -505,7 +509,7 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			<fk name="fk_cobon_extra_family_info" to_schema="relief" to_table="extra_family_info" delete_action="restrict" update_action="cascade" >
 				<fk_column name="family_id" pk="family_id" />
 			</fk>
-			<fk name="fk_cobon_person" to_schema="basic" to_table="person" >
+			<fk name="fk_cobon_person" to_schema="basic" to_table="person" delete_action="restrict" update_action="cascade" >
 				<fk_column name="person_id" pk="person_id" />
 				<fk_column name="organization_id" pk="organization_id" />
 				<fk_column name="subbranch_id" pk="subbranch_id" />
@@ -574,11 +578,11 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<column name="cobon_type_id" />
 				<column name="internantional_organization_id" />
 			</index>
-			<fk name="fk_material_in_cobon_cobon" to_schema="relief" to_table="cobon" >
+			<fk name="fk_material_in_cobon_cobon" to_schema="relief" to_table="cobon" delete_action="restrict" update_action="cascade" >
 				<fk_column name="cobon_id" pk="cobon_id" />
 				<fk_column name="cobon_type_id" pk="cobontype_id" />
 			</fk>
-			<fk name="fk_material_in_cobon_materials" to_schema="relief" to_table="materials" >
+			<fk name="fk_material_in_cobon_materials" to_schema="relief" to_table="materials" delete_action="restrict" update_action="cascade" >
 				<fk_column name="material_id" pk="materials_id" />
 				<fk_column name="internantional_organization_id" pk="internation_organization_id" />
 			</fk>

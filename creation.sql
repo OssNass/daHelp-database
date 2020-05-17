@@ -1,3 +1,10 @@
+create database dahelp;
+
+create user dhroot with PASSWORD 'dhroot';
+GRANT ALL PRIVILEGES ON database dahelp TO dhroot;
+
+\c dahelp;
+
 CREATE SCHEMA administration;
 
 CREATE SCHEMA basic;
@@ -248,7 +255,8 @@ CREATE TABLE clinic.pharmacy_stock (
 	expiration_date      date  NOT NULL ,
 	quantity             integer  NOT NULL ,
 	current_quantity     integer  NOT NULL ,
-	CONSTRAINT pk_shipment_item_item_id PRIMARY KEY ( shipment_id, medicine_id )
+	CONSTRAINT pk_shipment_item_item_id PRIMARY KEY ( shipment_id, medicine_id ),
+	CONSTRAINT unq_pharmacy_stock_medicine_id UNIQUE ( medicine_id, shipment_id ) 
  );
 
 COMMENT ON TABLE clinic.pharmacy_stock IS 'مخزن الصيدلية';
@@ -403,49 +411,49 @@ ALTER TABLE basic.displacement ADD CONSTRAINT fk_displacement_region FOREIGN KEY
 
 ALTER TABLE basic.displacement ADD CONSTRAINT fk_displacement_person FOREIGN KEY ( person_id, organization_id, subbranch_id ) REFERENCES basic.person( person_id, organization_id, subbranch_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE basic.family ADD CONSTRAINT fk_family_extra_family_info FOREIGN KEY ( family_id ) REFERENCES relief.extra_family_info( family_id );
+ALTER TABLE basic.family ADD CONSTRAINT fk_family_extra_family_info FOREIGN KEY ( family_id ) REFERENCES relief.extra_family_info( family_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE basic.health_status ADD CONSTRAINT fk_health_status_subbranch FOREIGN KEY ( person_id, organization_id, subbranch_id ) REFERENCES basic.person( person_id, organization_id, subbranch_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE basic.health_status ADD CONSTRAINT fk_health_status FOREIGN KEY ( status_id ) REFERENCES basic.chronic_desciption( status_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE basic.person ADD CONSTRAINT f_id FOREIGN KEY ( family_id ) REFERENCES basic.family( family_id );
+ALTER TABLE basic.person ADD CONSTRAINT f_id FOREIGN KEY ( family_id ) REFERENCES basic.family( family_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE basic.person ADD CONSTRAINT fk_person_region FOREIGN KEY ( neighborhood ) REFERENCES administration.region( id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE basic.person ADD CONSTRAINT fk_person_organizaiton FOREIGN KEY ( subbranch_id, organization_id ) REFERENCES administration.subbranch( id, organization_id );
 
-ALTER TABLE basic."zone" ADD CONSTRAINT fk_zone_person FOREIGN KEY ( person_id, organization_id, subbranch_id ) REFERENCES basic.person( person_id, organization_id, subbranch_id );
+ALTER TABLE basic."zone" ADD CONSTRAINT fk_zone_person FOREIGN KEY ( person_id, organization_id, subbranch_id ) REFERENCES basic.person( person_id, organization_id, subbranch_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE clinic.diagnosis ADD CONSTRAINT fk_diagnosis_disease FOREIGN KEY ( disease_id ) REFERENCES clinic.disease( disease_id );
+ALTER TABLE clinic.diagnosis ADD CONSTRAINT fk_diagnosis_disease FOREIGN KEY ( disease_id ) REFERENCES clinic.disease( disease_id ) ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE clinic.diagnosis ADD CONSTRAINT fk_diagnosis_examintation FOREIGN KEY ( examination_id, visit_id ) REFERENCES clinic.examination( examination_id, visit_id );
+ALTER TABLE clinic.diagnosis ADD CONSTRAINT fk_diagnosis_examintation FOREIGN KEY ( examination_id, visit_id ) REFERENCES clinic.examination( examination_id, visit_id ) ON DELETE CASCADE ON UPDATE RESTRICT;
 
-ALTER TABLE clinic.doctor ADD CONSTRAINT fk_doctor_clinics FOREIGN KEY ( clinic_id ) REFERENCES clinic.clinics( clinic_id );
+ALTER TABLE clinic.doctor ADD CONSTRAINT fk_doctor_clinics FOREIGN KEY ( clinic_id ) REFERENCES clinic.clinics( clinic_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE clinic.examination ADD CONSTRAINT fk_examination_visit_id FOREIGN KEY ( visit_id ) REFERENCES clinic.visit( visit_id );
+ALTER TABLE clinic.examination ADD CONSTRAINT fk_examination_visit_id FOREIGN KEY ( visit_id ) REFERENCES clinic.visit( visit_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE clinic.examination ADD CONSTRAINT fk_examination_doctor FOREIGN KEY ( doctor_id ) REFERENCES clinic.doctor( doctor_id );
+ALTER TABLE clinic.examination ADD CONSTRAINT fk_examination_doctor FOREIGN KEY ( doctor_id ) REFERENCES clinic.doctor( doctor_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE clinic.examintation ADD CONSTRAINT fk_examintation_doctor FOREIGN KEY ( doctor_id ) REFERENCES clinic.doctor( doctor_id );
+ALTER TABLE clinic.examintation ADD CONSTRAINT fk_examintation_doctor FOREIGN KEY ( doctor_id ) REFERENCES clinic.doctor( doctor_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE clinic.examintation ADD CONSTRAINT fk_examintation_visit FOREIGN KEY (  ) REFERENCES clinic.visit(  );
+ALTER TABLE clinic.examintation ADD CONSTRAINT fk_examintation_visit FOREIGN KEY ( visit_id ) REFERENCES clinic.visit( visit_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE clinic.medicine_out ADD CONSTRAINT fk_medicine_out_pharmacy_stock FOREIGN KEY ( medicine_id, shipment_id ) REFERENCES clinic.pharmacy_stock( medicine_id, shipment_id );
+ALTER TABLE clinic.medicine_out ADD CONSTRAINT fk_medicine_out_pharmacy_stock FOREIGN KEY ( medicine_id, shipment_id ) REFERENCES clinic.pharmacy_stock( medicine_id, shipment_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE clinic.medicine_out ADD CONSTRAINT fk_medicine_out FOREIGN KEY ( movement_id ) REFERENCES clinic.pharmacy_movement_out( movement_id );
+ALTER TABLE clinic.medicine_out ADD CONSTRAINT fk_medicine_out FOREIGN KEY ( movement_id ) REFERENCES clinic.pharmacy_movement_out( movement_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE clinic.pharmacy_movement_out ADD CONSTRAINT fk_pharmacy_movement_out FOREIGN KEY ( prescrition_id ) REFERENCES clinic.prescription( prescription_id );
 
-ALTER TABLE clinic.pharmacy_stock ADD CONSTRAINT fk_shipment_item_shipment FOREIGN KEY ( shipment_id ) REFERENCES clinic.shipment( shipment_id );
+ALTER TABLE clinic.pharmacy_stock ADD CONSTRAINT fk_shipment_item_shipment FOREIGN KEY ( shipment_id ) REFERENCES clinic.shipment( shipment_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE clinic.pharmacy_stock ADD CONSTRAINT fk_shipment_item_medicine FOREIGN KEY ( medicine_id ) REFERENCES clinic.medicine( medicine_id );
+ALTER TABLE clinic.pharmacy_stock ADD CONSTRAINT fk_shipment_item_medicine FOREIGN KEY ( medicine_id ) REFERENCES clinic.medicine( medicine_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE clinic.prescribed_medications ADD CONSTRAINT fk_prescribed_medications FOREIGN KEY ( medicine_id ) REFERENCES clinic.medicine( medicine_id );
+ALTER TABLE clinic.prescribed_medications ADD CONSTRAINT fk_prescribed_medications FOREIGN KEY ( medicine_id ) REFERENCES clinic.medicine( medicine_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE clinic.prescribed_medications ADD CONSTRAINT fk_prescribed_medications_prescrtion FOREIGN KEY ( prescrition_id ) REFERENCES clinic.prescription( prescription_id );
+ALTER TABLE clinic.prescribed_medications ADD CONSTRAINT fk_prescribed_medications_prescrtion FOREIGN KEY ( prescrition_id ) REFERENCES clinic.prescription( prescription_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE clinic.prescription ADD CONSTRAINT fk_prescription_examination FOREIGN KEY ( examination_id ) REFERENCES clinic.examination( examination_id );
+ALTER TABLE clinic.prescription ADD CONSTRAINT fk_prescription_examination FOREIGN KEY ( examination_id ) REFERENCES clinic.examination( examination_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE clinic.shipment ADD CONSTRAINT fk_shipment_internationorganization FOREIGN KEY ( shipment_source_id ) REFERENCES administration.internationorganization( id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -453,13 +461,13 @@ ALTER TABLE relief.cobon ADD CONSTRAINT fk_cobon_cobon_type FOREIGN KEY ( cobon_
 
 ALTER TABLE relief.cobon ADD CONSTRAINT fk_cobon_extra_family_info FOREIGN KEY ( family_id ) REFERENCES relief.extra_family_info( family_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE relief.cobon ADD CONSTRAINT fk_cobon_person FOREIGN KEY ( person_id, organization_id, subbranch_id ) REFERENCES basic.person( person_id, organization_id, subbranch_id );
+ALTER TABLE relief.cobon ADD CONSTRAINT fk_cobon_person FOREIGN KEY ( person_id, organization_id, subbranch_id ) REFERENCES basic.person( person_id, organization_id, subbranch_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE relief.food ADD CONSTRAINT fk_food_materials FOREIGN KEY ( material_id ) REFERENCES relief.materials( materials_id );
 
-ALTER TABLE relief.material_in_cobon ADD CONSTRAINT fk_material_in_cobon_cobon FOREIGN KEY ( cobon_id, cobon_type_id ) REFERENCES relief.cobon( cobon_id, cobontype_id );
+ALTER TABLE relief.material_in_cobon ADD CONSTRAINT fk_material_in_cobon_cobon FOREIGN KEY ( cobon_id, cobon_type_id ) REFERENCES relief.cobon( cobon_id, cobontype_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE relief.material_in_cobon ADD CONSTRAINT fk_material_in_cobon_materials FOREIGN KEY ( material_id, internantional_organization_id ) REFERENCES relief.materials( materials_id, internation_organization_id );
+ALTER TABLE relief.material_in_cobon ADD CONSTRAINT fk_material_in_cobon_materials FOREIGN KEY ( material_id, internantional_organization_id ) REFERENCES relief.materials( materials_id, internation_organization_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE relief.materials ADD CONSTRAINT fk_materials_organizaiton FOREIGN KEY ( internation_organization_id ) REFERENCES administration.internationorganization( id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
