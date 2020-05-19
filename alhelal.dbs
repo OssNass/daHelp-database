@@ -53,6 +53,7 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 			<column name="id" type="serial" jt="4" mandatory="y" autoincrement="y" />
 			<column name="organization_id" type="integer" decimal="0" jt="4" mandatory="y" />
 			<column name="parent_id" type="integer" decimal="0" jt="4" />
+			<column name="parent_org_id" type="integer" jt="4" />
 			<column name="telephone" type="varchar" length="10" decimal="0" jt="12" />
 			<column name="subbranch_city" type="varchar" length="20" decimal="0" jt="12" />
 			<column name="address" type="varchar" length="100" decimal="0" jt="12" />
@@ -60,15 +61,12 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<column name="id" />
 				<column name="organization_id" />
 			</index>
-			<index name="unq_subbranch_organization_id" unique="UNIQUE" >
-				<column name="organization_id" />
-				<column name="id" />
-			</index>
 			<fk name="fk_subbranch_organizaiton" to_schema="administration" to_table="organizaiton" delete_action="restrict" update_action="cascade" >
 				<fk_column name="organization_id" pk="id" />
 			</fk>
 			<fk name="fk_subbranch_subbranch" to_schema="administration" to_table="subbranch" delete_action="setNull" update_action="cascade" >
 				<fk_column name="parent_id" pk="id" />
+				<fk_column name="parent_org_id" pk="organization_id" />
 			</fk>
 		</table>
 		<table name="user_roles" >
@@ -662,9 +660,6 @@ material_type يعطي نوع المادة (غذائية، غير غذائية) 
 		<entity schema="basic" name="family" color="008000" x="2656" y="640" >
 			<callout x="2656" y="608" pointer="SV" />
 		</entity>
-		<entity schema="administration" name="subbranch" color="FF0000" x="1600" y="320" >
-			<callout x="1600" y="240" pointer="SV" />
-		</entity>
 		<entity schema="administration" name="users" color="FF0000" x="1824" y="576" />
 		<entity schema="administration" name="user_roles" color="FF0000" x="2048" y="576" />
 		<entity schema="administration" name="roles" color="FF0000" x="2224" y="576" />
@@ -700,6 +695,9 @@ material_type يعطي نوع المادة (غذائية، غير غذائية) 
 			<callout x="416" y="144" pointer="SV" />
 		</entity>
 		<entity schema="clinic" name="examination" color="C1D8EE" x="688" y="352" />
+		<entity schema="administration" name="subbranch" color="FF0000" x="1600" y="320" >
+			<callout x="1600" y="240" pointer="SV" />
+		</entity>
 		<group name="relief" color="C4E0F9" >
 			<entity schema="relief" name="extra_family_info" />
 			<entity schema="relief" name="cobon" />

@@ -1,3 +1,6 @@
+drop database if exists dahelp;
+drop role if exists dhroot;
+
 create database dahelp;
 
 create user dhroot with PASSWORD 'dhroot';
@@ -55,11 +58,11 @@ CREATE TABLE administration.subbranch (
 	id                   serial  NOT NULL ,
 	organization_id      integer  NOT NULL ,
 	parent_id            integer   ,
+	parent_org_id        integer   ,
 	telephone            varchar(10)   ,
 	subbranch_city       varchar(20)   ,
 	address              varchar(100)   ,
-	CONSTRAINT pk_subbranch_id PRIMARY KEY ( id, organization_id ),
-	CONSTRAINT unq_subbranch_organization_id UNIQUE ( organization_id, id ) 
+	CONSTRAINT pk_subbranch_id PRIMARY KEY ( id, organization_id )
  );
 
 COMMENT ON TABLE administration.subbranch IS 'توفير معلومات عن الأفرع التابعة لهذه المنظمة،\nفي حال كانت المنظمة لا تمتلك أفرع،\n يتم إدراج فرع واحد فقط تتطابق معلوماته معلومات المنظمة';
@@ -399,7 +402,7 @@ ALTER TABLE administration.region ADD CONSTRAINT fk_region_region FOREIGN KEY ( 
 
 ALTER TABLE administration.subbranch ADD CONSTRAINT fk_subbranch_organizaiton FOREIGN KEY ( organization_id ) REFERENCES administration.organizaiton( id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE administration.subbranch ADD CONSTRAINT fk_subbranch_subbranch FOREIGN KEY ( parent_id ) REFERENCES administration.subbranch( id ) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE administration.subbranch ADD CONSTRAINT fk_subbranch_subbranch FOREIGN KEY ( parent_id, parent_org_id ) REFERENCES administration.subbranch( id, organization_id ) ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE administration.user_roles ADD CONSTRAINT fk_user_roles_roles FOREIGN KEY ( role_id ) REFERENCES administration.roles( id );
 
@@ -435,9 +438,9 @@ ALTER TABLE clinic.examination ADD CONSTRAINT fk_examination_visit_id FOREIGN KE
 
 ALTER TABLE clinic.examination ADD CONSTRAINT fk_examination_doctor FOREIGN KEY ( doctor_id ) REFERENCES clinic.doctor( doctor_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE clinic.examintation ADD CONSTRAINT fk_examintation_doctor FOREIGN KEY ( doctor_id ) REFERENCES clinic.doctor( doctor_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE clinic.examintation ADD CONSTRAINT fk_examintation_doctor FOREIGN KEY ( doctor_id ) REFERENCES clinic.doctor( doctor_id );
 
-ALTER TABLE clinic.examintation ADD CONSTRAINT fk_examintation_visit FOREIGN KEY ( visit_id ) REFERENCES clinic.visit( visit_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE clinic.examintation ADD CONSTRAINT fk_examintation_visit FOREIGN KEY ( visit_id ) REFERENCES clinic.visit( visit_id );
 
 ALTER TABLE clinic.medicine_out ADD CONSTRAINT fk_medicine_out_pharmacy_stock FOREIGN KEY ( medicine_id, shipment_id ) REFERENCES clinic.pharmacy_stock( medicine_id, shipment_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
