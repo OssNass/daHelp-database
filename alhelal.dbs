@@ -72,6 +72,10 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 		<table name="user_roles" >
 			<column name="user_id" type="integer" jt="4" mandatory="y" />
 			<column name="role_id" type="integer" jt="4" mandatory="y" />
+			<index name="idx_user_roles" unique="PRIMARY_KEY" >
+				<column name="user_id" />
+				<column name="role_id" />
+			</index>
 			<fk name="fk_user_roles_roles" to_schema="administration" to_table="roles" >
 				<fk_column name="role_id" pk="id" />
 			</fk>

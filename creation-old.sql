@@ -1,3 +1,13 @@
+drop database if exists dahelp;
+drop role if exists dhroot;
+
+create database dahelp;
+
+create user dhroot with PASSWORD 'dhroot';
+GRANT ALL PRIVILEGES ON database dahelp TO dhroot;
+
+\c dahelp;
+
 CREATE SCHEMA administration;
 
 CREATE SCHEMA basic;
@@ -69,8 +79,7 @@ CREATE TABLE administration.users (
 
 CREATE TABLE administration.user_roles ( 
 	user_id              integer  NOT NULL ,
-	role_id              integer  NOT NULL ,
-	CONSTRAINT idx_user_roles PRIMARY KEY ( user_id, role_id )
+	role_id              integer  NOT NULL 
  );
 
 CREATE TABLE basic.chronic_desciption ( 
