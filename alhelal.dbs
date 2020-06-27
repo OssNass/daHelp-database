@@ -325,23 +325,6 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<fk_column name="doctor_id" pk="doctor_id" />
 			</fk>
 		</table>
-		<table name="examintation" >
-			<comment><![CDATA[المعاينة]]></comment>
-			<column name="examination_id" type="integer" decimal="0" jt="4" mandatory="y" autoincrement="y" />
-			<column name="visit_id" type="integer" decimal="0" jt="4" mandatory="y" />
-			<column name="doctor_id" type="integer" decimal="0" jt="4" mandatory="y" />
-			<column name="prescrition_id" type="integer" decimal="0" jt="4" mandatory="y" />
-			<index name="pk_examintation_examination_id" unique="PRIMARY_KEY" >
-				<column name="examination_id" />
-			</index>
-			<index name="unq_examintation_prescrition_id" unique="UNIQUE" >
-				<column name="prescrition_id" />
-			</index>
-			<fk name="fk_examintation_doctor" to_schema="clinic" to_table="doctor" >
-				<fk_column name="doctor_id" pk="doctor_id" />
-			</fk>
-			<fk name="fk_examintation_visit" to_schema="clinic" to_table="visit" />
-		</table>
 		<table name="medicine" >
 			<comment><![CDATA[معلومات عن الادوية]]></comment>
 			<column name="medicine_id" type="serial" jt="4" mandatory="y" autoincrement="y" />
@@ -555,17 +538,6 @@ ICRC,DRC,UNHCR,...etc]]></comment>
 				<column name="family_id" />
 			</index>
 		</table>
-		<table name="food" >
-			<column name="family_id" type="integer" decimal="0" jt="4" mandatory="y" />
-			<column name="f_date" type="date" length="0" decimal="0" jt="91" />
-			<column name="material_id" type="integer" decimal="0" jt="4" />
-			<index name="pk_food_family_id" unique="PRIMARY_KEY" >
-				<column name="family_id" />
-			</index>
-			<fk name="fk_food_materials" to_schema="relief" to_table="materials" >
-				<fk_column name="material_id" pk="materials_id" />
-			</fk>
-		</table>
 		<table name="material_in_cobon" >
 			<column name="material_id" type="integer" decimal="0" jt="4" mandatory="y" />
 			<column name="internantional_organization_id" type="integer" decimal="0" jt="4" mandatory="y" />
@@ -610,24 +582,6 @@ material_type يعطي نوع المادة (غذائية، غير غذائية) 
 			</index>
 			<fk name="fk_materials_organizaiton" to_schema="administration" to_table="internationorganization" delete_action="restrict" update_action="cascade" >
 				<fk_column name="internation_organization_id" pk="id" />
-			</fk>
-		</table>
-		<table name="non_food" >
-			<column name="person_id" type="integer" decimal="0" jt="4" mandatory="y" />
-			<column name="n_date" type="date" length="0" decimal="0" jt="91" />
-			<column name="material_id" type="integer" decimal="0" jt="4" />
-			<column name="subbranch_id" type="integer" decimal="0" jt="4" />
-			<column name="organization_id" type="integer" decimal="0" jt="4" />
-			<index name="unq_non_food_person_id" unique="UNIQUE" >
-				<column name="person_id" />
-			</index>
-			<index name="unq_non_food_person_id_0" unique="UNIQUE" >
-				<column name="person_id" />
-				<column name="subbranch_id" />
-				<column name="organization_id" />
-			</index>
-			<fk name="fk_non_food_materials" to_schema="relief" to_table="materials" >
-				<fk_column name="material_id" pk="materials_id" />
 			</fk>
 		</table>
 	</schema>

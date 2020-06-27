@@ -231,17 +231,6 @@ CREATE TABLE clinic.examination (
 
 COMMENT ON TABLE clinic.examination IS 'معاينة';
 
-CREATE TABLE clinic.examintation ( 
-	examination_id       integer  NOT NULL ,
-	visit_id             integer  NOT NULL ,
-	doctor_id            integer  NOT NULL ,
-	prescrition_id       integer  NOT NULL ,
-	CONSTRAINT pk_examintation_examination_id PRIMARY KEY ( examination_id ),
-	CONSTRAINT unq_examintation_prescrition_id UNIQUE ( prescrition_id ) 
- );
-
-COMMENT ON TABLE clinic.examintation IS 'المعاينة';
-
 CREATE TABLE clinic.pharmacy_stock ( 
 	shipment_id          integer  NOT NULL ,
 	medicine_id          integer  NOT NULL ,
@@ -346,16 +335,6 @@ CREATE TABLE relief.materials (
 
 COMMENT ON TABLE relief.materials IS 'يوفر معلومات عن المواد التي بمكن استخدامها في المركز الإغاثي\nحقل name يعطي اسم المادة\nunit وحدة القياس (سلة، قطعة(\nmaterial_type يعطي نوع المادة (غذائية، غير غذائية) قيممته الإفتراضية 0 تعني غذائية';
 
-CREATE TABLE relief.non_food ( 
-	person_id            integer  NOT NULL ,
-	n_date               date   ,
-	material_id          integer   ,
-	subbranch_id         integer   ,
-	organization_id      integer   ,
-	CONSTRAINT unq_non_food_person_id UNIQUE ( person_id ) ,
-	CONSTRAINT unq_non_food_person_id_0 UNIQUE ( person_id, subbranch_id, organization_id ) 
- );
-
 CREATE TABLE relief.cobon ( 
 	family_id            integer  NOT NULL ,
 	person_id            integer  NOT NULL ,
@@ -372,13 +351,6 @@ CREATE TABLE relief.cobon (
 COMMENT ON COLUMN relief.cobon.cobon_issue_stamp IS 'من أهم الحقول يوضح وقت وتاريخ قطع الكوبون';
 
 COMMENT ON COLUMN relief.cobon.cobon_recieve_stamp IS 'يوضح تاريخ ووقت استلام المعونة';
-
-CREATE TABLE relief.food ( 
-	family_id            integer  NOT NULL ,
-	f_date               date   ,
-	material_id          integer   ,
-	CONSTRAINT pk_food_family_id PRIMARY KEY ( family_id )
- );
 
 CREATE TABLE relief.material_in_cobon ( 
 	material_id          integer  NOT NULL ,
@@ -429,10 +401,6 @@ ALTER TABLE clinic.examination ADD CONSTRAINT fk_examination_visit_id FOREIGN KE
 
 ALTER TABLE clinic.examination ADD CONSTRAINT fk_examination_doctor FOREIGN KEY ( doctor_id ) REFERENCES clinic.doctor( doctor_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE clinic.examintation ADD CONSTRAINT fk_examintation_doctor FOREIGN KEY ( doctor_id ) REFERENCES clinic.doctor( doctor_id );
-
-ALTER TABLE clinic.examintation ADD CONSTRAINT fk_examintation_visit FOREIGN KEY ( visit_id ) REFERENCES clinic.visit( visit_id );
-
 ALTER TABLE clinic.medicine_out ADD CONSTRAINT fk_medicine_out_pharmacy_stock FOREIGN KEY ( medicine_id, shipment_id ) REFERENCES clinic.pharmacy_stock( medicine_id, shipment_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE clinic.medicine_out ADD CONSTRAINT fk_medicine_out FOREIGN KEY ( movement_id ) REFERENCES clinic.pharmacy_movement_out( movement_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -457,13 +425,9 @@ ALTER TABLE relief.cobon ADD CONSTRAINT fk_cobon_extra_family_info FOREIGN KEY (
 
 ALTER TABLE relief.cobon ADD CONSTRAINT fk_cobon_person FOREIGN KEY ( person_id, organization_id, subbranch_id ) REFERENCES basic.person( person_id, organization_id, subbranch_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE relief.food ADD CONSTRAINT fk_food_materials FOREIGN KEY ( material_id ) REFERENCES relief.materials( materials_id );
-
 ALTER TABLE relief.material_in_cobon ADD CONSTRAINT fk_material_in_cobon_cobon FOREIGN KEY ( cobon_id, cobon_type_id ) REFERENCES relief.cobon( cobon_id, cobontype_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE relief.material_in_cobon ADD CONSTRAINT fk_material_in_cobon_materials FOREIGN KEY ( material_id, internantional_organization_id ) REFERENCES relief.materials( materials_id, internation_organization_id ) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE relief.materials ADD CONSTRAINT fk_materials_organizaiton FOREIGN KEY ( internation_organization_id ) REFERENCES administration.internationorganization( id ) ON DELETE RESTRICT ON UPDATE CASCADE;
-
-ALTER TABLE relief.non_food ADD CONSTRAINT fk_non_food_materials FOREIGN KEY ( material_id ) REFERENCES relief.materials( materials_id );
 
